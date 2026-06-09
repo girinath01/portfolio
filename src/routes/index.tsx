@@ -347,34 +347,46 @@ function Education() {
     <section id="education" className="py-24 border-t border-border">
       <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-16">
         <div>
-          <SectionLabel>04 · Education</SectionLabel>
-          <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold">Where I've studied.</h2>
-          <ul className="mt-10 space-y-6">
+          <AnimatedSection>
+            <SectionLabel>04 · Education</SectionLabel>
+            <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold">Where I've studied.</h2>
+          </AnimatedSection>
+          <StaggerContainer className="mt-10 space-y-6">
             {EDUCATION.map((e) => (
-              <li key={e.title} className="relative pl-8 border-l border-border">
-                <span className="absolute -left-[7px] top-1.5 w-3 h-3 rounded-full bg-primary shadow-glow" />
-                <div className="font-mono text-xs text-primary">{e.year}</div>
-                <div className="mt-1 font-display font-semibold text-lg flex items-start gap-2">
-                  <GraduationCap className="w-5 h-5 mt-1 text-muted-foreground" />{e.title}
-                </div>
-                <div className="text-muted-foreground text-sm">{e.school}</div>
-              </li>
+              <StaggerItem key={e.title}>
+                <li className="relative pl-8 border-l border-border list-none">
+                  <span className="absolute -left-[7px] top-1.5 w-3 h-3 rounded-full bg-primary shadow-glow" />
+                  <div className="font-mono text-xs text-primary">{e.year}</div>
+                  <div className="mt-1 font-display font-semibold text-lg flex items-start gap-2">
+                    <GraduationCap className="w-5 h-5 mt-1 text-muted-foreground" />{e.title}
+                  </div>
+                  <div className="text-muted-foreground text-sm">{e.school}</div>
+                </li>
+              </StaggerItem>
             ))}
-          </ul>
+          </StaggerContainer>
         </div>
 
         <div>
-          <SectionLabel>05 · Certifications</SectionLabel>
-          <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold">Always learning.</h2>
-          <ul className="mt-10 space-y-4">
+          <AnimatedSection>
+            <SectionLabel>05 · Certifications</SectionLabel>
+            <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold">Always learning.</h2>
+          </AnimatedSection>
+          <StaggerContainer className="mt-10 space-y-4">
             {CERTS.map((c) => (
-              <li key={c} className="rounded-2xl border border-border bg-surface p-5 flex items-start gap-4 hover:border-primary/50 transition">
-                <Award className="w-6 h-6 text-primary shrink-0" />
-                <span className="text-foreground">{c}</span>
-              </li>
+              <StaggerItem key={c}>
+                <motion.li
+                  className="rounded-2xl border border-border bg-surface p-5 flex items-start gap-4 hover:border-primary/50 transition list-none"
+                  whileHover={{ x: 6 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                >
+                  <Award className="w-6 h-6 text-primary shrink-0" />
+                  <span className="text-foreground">{c}</span>
+                </motion.li>
+              </StaggerItem>
             ))}
-          </ul>
-          <div className="mt-8 rounded-2xl border border-border bg-surface p-6">
+          </StaggerContainer>
+          <AnimatedSection className="mt-8 rounded-2xl border border-border bg-surface p-6" delay={0.3}>
             <div className="flex items-center gap-2 text-sm font-mono text-primary">
               <Sparkles className="w-4 h-4" /> Coursework
             </div>
@@ -383,7 +395,7 @@ function Education() {
                 <span key={c} className="text-xs rounded-md bg-background px-2.5 py-1 text-muted-foreground border border-border">{c}</span>
               ))}
             </div>
-          </div>
+          </AnimatedSection>
         </div>
       </div>
     </section>
