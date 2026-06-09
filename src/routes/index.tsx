@@ -111,28 +111,62 @@ function Hero() {
     <section id="top" className="relative pt-32 pb-24 md:pt-44 md:pb-32 bg-hero">
       <div className="absolute inset-0 grid-bg pointer-events-none" />
       <div className="relative max-w-6xl mx-auto px-6 grid lg:grid-cols-[1.5fr_1fr] gap-12 lg:gap-16 items-center">
-        <div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-1 text-xs font-mono text-muted-foreground mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
+          <motion.div
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-1 text-xs font-mono text-muted-foreground mb-8"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
             <span className="w-2 h-2 rounded-full bg-primary animate-pulse-glow" />
             Available for internships · AI / Data Science
-          </div>
-          <h1 className="font-display font-bold text-5xl sm:text-6xl md:text-7xl leading-[0.95] tracking-tight">
+          </motion.div>
+          <motion.h1
+            className="font-display font-bold text-5xl sm:text-6xl md:text-7xl leading-[0.95] tracking-tight"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.3 }}
+          >
             Building <span className="text-gradient-accent">intelligent</span><br />
             systems that<br />
             <span className="text-gradient">solve real problems.</span>
-          </h1>
-          <p className="mt-8 max-w-2xl text-lg text-muted-foreground leading-relaxed">
+          </motion.h1>
+          <motion.p
+            className="mt-8 max-w-2xl text-lg text-muted-foreground leading-relaxed"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+          >
             I'm <span className="text-foreground font-medium">Girinath K</span> — an Artificial Intelligence & Data Science student passionate about machine learning, computer vision, and turning Python prototypes into useful, production-shaped tools.
-          </p>
-          <div className="mt-10 flex flex-wrap items-center gap-4">
-            <a href="#projects" className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-medium text-primary-foreground shadow-glow hover:translate-y-[-1px] transition">
+          </motion.p>
+          <motion.div
+            className="mt-10 flex flex-wrap items-center gap-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+          >
+            <motion.a
+              href="#projects"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-medium text-primary-foreground shadow-glow transition"
+              whileHover={{ y: -3, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
               View my work <ArrowUpRight className="w-4 h-4" />
-            </a>
-            <a href="#contact" className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/40 px-6 py-3 font-medium text-foreground hover:bg-surface transition">
+            </motion.a>
+            <motion.a
+              href="#contact"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/40 px-6 py-3 font-medium text-foreground hover:bg-surface transition"
+              whileHover={{ y: -3 }}
+              whileTap={{ scale: 0.98 }}
+            >
               Get in touch
-            </a>
-          </div>
-        </div>
+            </motion.a>
+          </motion.div>
+        </motion.div>
 
         <div className="relative mx-auto lg:mx-0 w-full max-w-sm">
           <div className="absolute -inset-4 bg-gradient-to-br from-primary/40 to-accent/30 rounded-[2rem] blur-2xl opacity-60 animate-pulse-glow" />
