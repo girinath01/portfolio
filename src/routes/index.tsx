@@ -228,11 +228,11 @@ function About() {
   return (
     <section id="about" className="py-24 border-t border-border">
       <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-12">
-        <div>
+        <AnimatedSection>
           <SectionLabel>01 · About</SectionLabel>
           <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold">A student-engineer obsessed with <span className="text-primary">building</span>.</h2>
-        </div>
-        <div className="md:col-span-2 space-y-5 text-lg text-muted-foreground leading-relaxed">
+        </AnimatedSection>
+        <AnimatedSection className="md:col-span-2 space-y-5 text-lg text-muted-foreground leading-relaxed" delay={0.15}>
           <p>
             I'm currently pursuing my B.Tech in Artificial Intelligence and Data Science at KGISL Institute of Technology, Coimbatore. My focus is on machine learning fundamentals, Python development, and shipping projects that solve practical problems — not toy demos.
           </p>
@@ -242,7 +242,7 @@ function About() {
           <p>
             I'm actively seeking <span className="text-foreground font-medium">internship opportunities</span> in AI, Data Science and Software Development where I can contribute, learn from senior engineers, and ship work that ends up in production.
           </p>
-        </div>
+        </AnimatedSection>
       </div>
     </section>
   );
