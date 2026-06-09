@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Github, Linkedin, Mail, Phone, MapPin, ArrowUpRight, Code2, Database, Brain, Cpu, GraduationCap, Award, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
 import girinathPhoto from "@/assets/girinath.jpeg.asset.json";
+import { AnimatedSection } from "@/components/AnimatedSection";
+import { StaggerContainer, StaggerItem } from "@/components/StaggerContainer";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -108,32 +111,75 @@ function Hero() {
     <section id="top" className="relative pt-32 pb-24 md:pt-44 md:pb-32 bg-hero">
       <div className="absolute inset-0 grid-bg pointer-events-none" />
       <div className="relative max-w-6xl mx-auto px-6 grid lg:grid-cols-[1.5fr_1fr] gap-12 lg:gap-16 items-center">
-        <div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-1 text-xs font-mono text-muted-foreground mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
+          <motion.div
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-1 text-xs font-mono text-muted-foreground mb-8"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
             <span className="w-2 h-2 rounded-full bg-primary animate-pulse-glow" />
             Available for internships · AI / Data Science
-          </div>
-          <h1 className="font-display font-bold text-5xl sm:text-6xl md:text-7xl leading-[0.95] tracking-tight">
+          </motion.div>
+          <motion.h1
+            className="font-display font-bold text-5xl sm:text-6xl md:text-7xl leading-[0.95] tracking-tight"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.3 }}
+          >
             Building <span className="text-gradient-accent">intelligent</span><br />
             systems that<br />
             <span className="text-gradient">solve real problems.</span>
-          </h1>
-          <p className="mt-8 max-w-2xl text-lg text-muted-foreground leading-relaxed">
+          </motion.h1>
+          <motion.p
+            className="mt-8 max-w-2xl text-lg text-muted-foreground leading-relaxed"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+          >
             I'm <span className="text-foreground font-medium">Girinath K</span> — an Artificial Intelligence & Data Science student passionate about machine learning, computer vision, and turning Python prototypes into useful, production-shaped tools.
-          </p>
-          <div className="mt-10 flex flex-wrap items-center gap-4">
-            <a href="#projects" className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-medium text-primary-foreground shadow-glow hover:translate-y-[-1px] transition">
+          </motion.p>
+          <motion.div
+            className="mt-10 flex flex-wrap items-center gap-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+          >
+            <motion.a
+              href="#projects"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-medium text-primary-foreground shadow-glow transition"
+              whileHover={{ y: -3, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
               View my work <ArrowUpRight className="w-4 h-4" />
-            </a>
-            <a href="#contact" className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/40 px-6 py-3 font-medium text-foreground hover:bg-surface transition">
+            </motion.a>
+            <motion.a
+              href="#contact"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/40 px-6 py-3 font-medium text-foreground hover:bg-surface transition"
+              whileHover={{ y: -3 }}
+              whileTap={{ scale: 0.98 }}
+            >
               Get in touch
-            </a>
-          </div>
-        </div>
+            </motion.a>
+          </motion.div>
+        </motion.div>
 
-        <div className="relative mx-auto lg:mx-0 w-full max-w-sm">
+        <motion.div
+          className="relative mx-auto lg:mx-0 w-full max-w-sm"
+          initial={{ opacity: 0, scale: 0.9, x: 30 }}
+          animate={{ opacity: 1, scale: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+        >
           <div className="absolute -inset-4 bg-gradient-to-br from-primary/40 to-accent/30 rounded-[2rem] blur-2xl opacity-60 animate-pulse-glow" />
-          <div className="relative rounded-[2rem] overflow-hidden border border-border bg-surface shadow-card animate-float">
+          <motion.div
+            className="relative rounded-[2rem] overflow-hidden border border-border bg-surface shadow-card animate-float"
+            whileHover={{ scale: 1.02, rotate: 1 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          >
             <img
               src={girinathPhoto.url}
               alt="Portrait of Girinath K"
@@ -147,25 +193,33 @@ function Hero() {
               </div>
               <span className="w-3 h-3 rounded-full bg-primary shadow-glow animate-pulse-glow" />
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
 
-      <div className="relative max-w-6xl mx-auto px-6 mt-16">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-border rounded-2xl overflow-hidden border border-border">
+      <motion.div
+        className="relative max-w-6xl mx-auto px-6 mt-16"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
+        <StaggerContainer className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-border rounded-2xl overflow-hidden border border-border">
           {[
             { k: "3+", v: "Projects shipped" },
             { k: "5+", v: "Languages" },
             { k: "3", v: "Certifications" },
             { k: "B.Tech", v: "AI & DS · 2024" },
           ].map((s) => (
-            <div key={s.v} className="bg-surface p-5">
-              <div className="text-3xl font-display font-bold text-primary">{s.k}</div>
-              <div className="text-xs text-muted-foreground mt-1">{s.v}</div>
-            </div>
+            <StaggerItem key={s.v}>
+              <div className="bg-surface p-5">
+                <div className="text-3xl font-display font-bold text-primary">{s.k}</div>
+                <div className="text-xs text-muted-foreground mt-1">{s.v}</div>
+              </div>
+            </StaggerItem>
           ))}
-        </div>
-      </div>
+        </StaggerContainer>
+      </motion.div>
     </section>
   );
 }
@@ -174,11 +228,11 @@ function About() {
   return (
     <section id="about" className="py-24 border-t border-border">
       <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-12">
-        <div>
+        <AnimatedSection>
           <SectionLabel>01 · About</SectionLabel>
           <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold">A student-engineer obsessed with <span className="text-primary">building</span>.</h2>
-        </div>
-        <div className="md:col-span-2 space-y-5 text-lg text-muted-foreground leading-relaxed">
+        </AnimatedSection>
+        <AnimatedSection className="md:col-span-2 space-y-5 text-lg text-muted-foreground leading-relaxed" delay={0.15}>
           <p>
             I'm currently pursuing my B.Tech in Artificial Intelligence and Data Science at KGISL Institute of Technology, Coimbatore. My focus is on machine learning fundamentals, Python development, and shipping projects that solve practical problems — not toy demos.
           </p>
@@ -188,7 +242,7 @@ function About() {
           <p>
             I'm actively seeking <span className="text-foreground font-medium">internship opportunities</span> in AI, Data Science and Software Development where I can contribute, learn from senior engineers, and ship work that ends up in production.
           </p>
-        </div>
+        </AnimatedSection>
       </div>
     </section>
   );
@@ -198,31 +252,44 @@ function Skills() {
   return (
     <section id="skills" className="py-24 border-t border-border">
       <div className="max-w-6xl mx-auto px-6">
-        <SectionLabel>02 · Toolkit</SectionLabel>
-        <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold max-w-2xl">The stack I reach for.</h2>
-        <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <AnimatedSection>
+          <SectionLabel>02 · Toolkit</SectionLabel>
+          <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold max-w-2xl">The stack I reach for.</h2>
+        </AnimatedSection>
+        <StaggerContainer className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {SKILL_GROUPS.map((g) => (
-            <div key={g.title} className="group relative rounded-2xl border border-border bg-surface p-6 hover:border-primary/50 transition shadow-card">
-              <div className="font-mono text-xs text-primary uppercase tracking-wider">{g.title}</div>
-              <ul className="mt-4 space-y-2">
-                {g.items.map((i) => (
-                  <li key={i} className="flex items-center gap-2 text-foreground">
-                    <span className="w-1 h-1 rounded-full bg-primary" />
-                    {i}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <StaggerItem key={g.title}>
+              <motion.div
+                className="group relative rounded-2xl border border-border bg-surface p-6 hover:border-primary/50 transition shadow-card h-full"
+                whileHover={{ y: -6, scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 400, damping: 20 }}
+              >
+                <div className="font-mono text-xs text-primary uppercase tracking-wider">{g.title}</div>
+                <ul className="mt-4 space-y-2">
+                  {g.items.map((i) => (
+                    <li key={i} className="flex items-center gap-2 text-foreground">
+                      <span className="w-1 h-1 rounded-full bg-primary" />
+                      {i}
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
 
-        <div className="mt-10 flex flex-wrap gap-3">
+        <AnimatedSection className="mt-10 flex flex-wrap gap-3" delay={0.3}>
           {["Python", "Machine Learning", "OpenCV", "SQL", "Linux", "Git", "Data Analysis"].map((t) => (
-            <span key={t} className="rounded-full border border-border bg-surface/60 px-4 py-1.5 text-sm font-mono text-muted-foreground">
+            <motion.span
+              key={t}
+              className="rounded-full border border-border bg-surface/60 px-4 py-1.5 text-sm font-mono text-muted-foreground"
+              whileHover={{ y: -3, scale: 1.05, borderColor: "var(--primary)" }}
+              transition={{ type: "spring", stiffness: 400, damping: 20 }}
+            >
               {t}
-            </span>
+            </motion.span>
           ))}
-        </div>
+        </AnimatedSection>
       </div>
     </section>
   );
@@ -232,7 +299,7 @@ function Projects() {
   return (
     <section id="projects" className="py-24 border-t border-border">
       <div className="max-w-6xl mx-auto px-6">
-        <div className="flex items-end justify-between flex-wrap gap-4">
+        <AnimatedSection className="flex items-end justify-between flex-wrap gap-4">
           <div>
             <SectionLabel>03 · Selected work</SectionLabel>
             <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold max-w-2xl">Projects I've shipped.</h2>
@@ -240,30 +307,36 @@ function Projects() {
           <a href="https://github.com/girinath01" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition">
             <Github className="w-4 h-4" /> github.com/girinath01
           </a>
-        </div>
+        </AnimatedSection>
 
-        <div className="mt-14 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <StaggerContainer className="mt-14 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {PROJECTS.map((p) => {
             const Icon = p.icon;
             return (
-              <article key={p.title} className="group relative rounded-3xl border border-border bg-surface p-7 hover:bg-surface-elevated transition shadow-card overflow-hidden">
-                <div className={`absolute -top-12 -right-12 w-40 h-40 rounded-full bg-gradient-to-br ${p.accent} opacity-10 blur-2xl group-hover:opacity-25 transition`} />
-                <div className="relative">
-                  <div className="w-12 h-12 rounded-xl bg-background border border-border grid place-items-center text-primary">
-                    <Icon className="w-6 h-6" />
+              <StaggerItem key={p.title}>
+                <motion.article
+                  className="group relative rounded-3xl border border-border bg-surface p-7 hover:bg-surface-elevated transition shadow-card overflow-hidden h-full"
+                  whileHover={{ y: -8, scale: 1.01 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                >
+                  <div className={`absolute -top-12 -right-12 w-40 h-40 rounded-full bg-gradient-to-br ${p.accent} opacity-10 blur-2xl group-hover:opacity-25 transition`} />
+                  <div className="relative">
+                    <div className="w-12 h-12 rounded-xl bg-background border border-border grid place-items-center text-primary">
+                      <Icon className="w-6 h-6" />
+                    </div>
+                    <h3 className="mt-6 text-2xl font-display font-bold">{p.title}</h3>
+                    <p className="mt-3 text-muted-foreground leading-relaxed">{p.description}</p>
+                    <div className="mt-5 flex flex-wrap gap-2">
+                      {p.stack.map((s) => (
+                        <span key={s} className="text-xs font-mono rounded-full border border-border bg-background/50 px-2.5 py-1 text-muted-foreground">{s}</span>
+                      ))}
+                    </div>
                   </div>
-                  <h3 className="mt-6 text-2xl font-display font-bold">{p.title}</h3>
-                  <p className="mt-3 text-muted-foreground leading-relaxed">{p.description}</p>
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    {p.stack.map((s) => (
-                      <span key={s} className="text-xs font-mono rounded-full border border-border bg-background/50 px-2.5 py-1 text-muted-foreground">{s}</span>
-                    ))}
-                  </div>
-                </div>
-              </article>
+                </motion.article>
+              </StaggerItem>
             );
           })}
-        </div>
+        </StaggerContainer>
       </div>
     </section>
   );
@@ -274,34 +347,46 @@ function Education() {
     <section id="education" className="py-24 border-t border-border">
       <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-16">
         <div>
-          <SectionLabel>04 · Education</SectionLabel>
-          <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold">Where I've studied.</h2>
-          <ul className="mt-10 space-y-6">
+          <AnimatedSection>
+            <SectionLabel>04 · Education</SectionLabel>
+            <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold">Where I've studied.</h2>
+          </AnimatedSection>
+          <StaggerContainer className="mt-10 space-y-6">
             {EDUCATION.map((e) => (
-              <li key={e.title} className="relative pl-8 border-l border-border">
-                <span className="absolute -left-[7px] top-1.5 w-3 h-3 rounded-full bg-primary shadow-glow" />
-                <div className="font-mono text-xs text-primary">{e.year}</div>
-                <div className="mt-1 font-display font-semibold text-lg flex items-start gap-2">
-                  <GraduationCap className="w-5 h-5 mt-1 text-muted-foreground" />{e.title}
-                </div>
-                <div className="text-muted-foreground text-sm">{e.school}</div>
-              </li>
+              <StaggerItem key={e.title}>
+                <li className="relative pl-8 border-l border-border list-none">
+                  <span className="absolute -left-[7px] top-1.5 w-3 h-3 rounded-full bg-primary shadow-glow" />
+                  <div className="font-mono text-xs text-primary">{e.year}</div>
+                  <div className="mt-1 font-display font-semibold text-lg flex items-start gap-2">
+                    <GraduationCap className="w-5 h-5 mt-1 text-muted-foreground" />{e.title}
+                  </div>
+                  <div className="text-muted-foreground text-sm">{e.school}</div>
+                </li>
+              </StaggerItem>
             ))}
-          </ul>
+          </StaggerContainer>
         </div>
 
         <div>
-          <SectionLabel>05 · Certifications</SectionLabel>
-          <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold">Always learning.</h2>
-          <ul className="mt-10 space-y-4">
+          <AnimatedSection>
+            <SectionLabel>05 · Certifications</SectionLabel>
+            <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold">Always learning.</h2>
+          </AnimatedSection>
+          <StaggerContainer className="mt-10 space-y-4">
             {CERTS.map((c) => (
-              <li key={c} className="rounded-2xl border border-border bg-surface p-5 flex items-start gap-4 hover:border-primary/50 transition">
-                <Award className="w-6 h-6 text-primary shrink-0" />
-                <span className="text-foreground">{c}</span>
-              </li>
+              <StaggerItem key={c}>
+                <motion.li
+                  className="rounded-2xl border border-border bg-surface p-5 flex items-start gap-4 hover:border-primary/50 transition list-none"
+                  whileHover={{ x: 6 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                >
+                  <Award className="w-6 h-6 text-primary shrink-0" />
+                  <span className="text-foreground">{c}</span>
+                </motion.li>
+              </StaggerItem>
             ))}
-          </ul>
-          <div className="mt-8 rounded-2xl border border-border bg-surface p-6">
+          </StaggerContainer>
+          <AnimatedSection className="mt-8 rounded-2xl border border-border bg-surface p-6" delay={0.3}>
             <div className="flex items-center gap-2 text-sm font-mono text-primary">
               <Sparkles className="w-4 h-4" /> Coursework
             </div>
@@ -310,7 +395,7 @@ function Education() {
                 <span key={c} className="text-xs rounded-md bg-background px-2.5 py-1 text-muted-foreground border border-border">{c}</span>
               ))}
             </div>
-          </div>
+          </AnimatedSection>
         </div>
       </div>
     </section>
