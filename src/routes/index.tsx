@@ -107,29 +107,52 @@ function Hero() {
   return (
     <section id="top" className="relative pt-32 pb-24 md:pt-44 md:pb-32 bg-hero">
       <div className="absolute inset-0 grid-bg pointer-events-none" />
-      <div className="relative max-w-6xl mx-auto px-6">
-        <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-1 text-xs font-mono text-muted-foreground mb-8">
-          <span className="w-2 h-2 rounded-full bg-primary animate-pulse-glow" />
-          Available for internships · AI / Data Science
-        </div>
-        <h1 className="font-display font-bold text-5xl sm:text-6xl md:text-8xl leading-[0.95] tracking-tight">
-          Building <span className="text-gradient-accent">intelligent</span><br />
-          systems that<br />
-          <span className="text-gradient">solve real problems.</span>
-        </h1>
-        <p className="mt-8 max-w-2xl text-lg text-muted-foreground leading-relaxed">
-          I'm <span className="text-foreground font-medium">Girinath K</span> — an Artificial Intelligence & Data Science student passionate about machine learning, computer vision, and turning Python prototypes into useful, production-shaped tools.
-        </p>
-        <div className="mt-10 flex flex-wrap items-center gap-4">
-          <a href="#projects" className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-medium text-primary-foreground shadow-glow hover:translate-y-[-1px] transition">
-            View my work <ArrowUpRight className="w-4 h-4" />
-          </a>
-          <a href="#contact" className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/40 px-6 py-3 font-medium text-foreground hover:bg-surface transition">
-            Get in touch
-          </a>
+      <div className="relative max-w-6xl mx-auto px-6 grid lg:grid-cols-[1.5fr_1fr] gap-12 lg:gap-16 items-center">
+        <div>
+          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-1 text-xs font-mono text-muted-foreground mb-8">
+            <span className="w-2 h-2 rounded-full bg-primary animate-pulse-glow" />
+            Available for internships · AI / Data Science
+          </div>
+          <h1 className="font-display font-bold text-5xl sm:text-6xl md:text-7xl leading-[0.95] tracking-tight">
+            Building <span className="text-gradient-accent">intelligent</span><br />
+            systems that<br />
+            <span className="text-gradient">solve real problems.</span>
+          </h1>
+          <p className="mt-8 max-w-2xl text-lg text-muted-foreground leading-relaxed">
+            I'm <span className="text-foreground font-medium">Girinath K</span> — an Artificial Intelligence & Data Science student passionate about machine learning, computer vision, and turning Python prototypes into useful, production-shaped tools.
+          </p>
+          <div className="mt-10 flex flex-wrap items-center gap-4">
+            <a href="#projects" className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-medium text-primary-foreground shadow-glow hover:translate-y-[-1px] transition">
+              View my work <ArrowUpRight className="w-4 h-4" />
+            </a>
+            <a href="#contact" className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/40 px-6 py-3 font-medium text-foreground hover:bg-surface transition">
+              Get in touch
+            </a>
+          </div>
         </div>
 
-        <div className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-px bg-border rounded-2xl overflow-hidden border border-border">
+        <div className="relative mx-auto lg:mx-0 w-full max-w-sm">
+          <div className="absolute -inset-4 bg-gradient-to-br from-primary/40 to-accent/30 rounded-[2rem] blur-2xl opacity-60 animate-pulse-glow" />
+          <div className="relative rounded-[2rem] overflow-hidden border border-border bg-surface shadow-card animate-float">
+            <img
+              src={girinathPhoto.url}
+              alt="Portrait of Girinath K"
+              className="w-full h-auto object-cover aspect-[4/5]"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+              <div>
+                <div className="font-display font-bold text-lg">Girinath K</div>
+                <div className="text-xs font-mono text-primary">AI & DS · India</div>
+              </div>
+              <span className="w-3 h-3 rounded-full bg-primary shadow-glow animate-pulse-glow" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="relative max-w-6xl mx-auto px-6 mt-16">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-border rounded-2xl overflow-hidden border border-border">
           {[
             { k: "3+", v: "Projects shipped" },
             { k: "5+", v: "Languages" },
