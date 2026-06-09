@@ -299,7 +299,7 @@ function Projects() {
   return (
     <section id="projects" className="py-24 border-t border-border">
       <div className="max-w-6xl mx-auto px-6">
-        <div className="flex items-end justify-between flex-wrap gap-4">
+        <AnimatedSection className="flex items-end justify-between flex-wrap gap-4">
           <div>
             <SectionLabel>03 · Selected work</SectionLabel>
             <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold max-w-2xl">Projects I've shipped.</h2>
@@ -307,30 +307,36 @@ function Projects() {
           <a href="https://github.com/girinath01" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition">
             <Github className="w-4 h-4" /> github.com/girinath01
           </a>
-        </div>
+        </AnimatedSection>
 
-        <div className="mt-14 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <StaggerContainer className="mt-14 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {PROJECTS.map((p) => {
             const Icon = p.icon;
             return (
-              <article key={p.title} className="group relative rounded-3xl border border-border bg-surface p-7 hover:bg-surface-elevated transition shadow-card overflow-hidden">
-                <div className={`absolute -top-12 -right-12 w-40 h-40 rounded-full bg-gradient-to-br ${p.accent} opacity-10 blur-2xl group-hover:opacity-25 transition`} />
-                <div className="relative">
-                  <div className="w-12 h-12 rounded-xl bg-background border border-border grid place-items-center text-primary">
-                    <Icon className="w-6 h-6" />
+              <StaggerItem key={p.title}>
+                <motion.article
+                  className="group relative rounded-3xl border border-border bg-surface p-7 hover:bg-surface-elevated transition shadow-card overflow-hidden h-full"
+                  whileHover={{ y: -8, scale: 1.01 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                >
+                  <div className={`absolute -top-12 -right-12 w-40 h-40 rounded-full bg-gradient-to-br ${p.accent} opacity-10 blur-2xl group-hover:opacity-25 transition`} />
+                  <div className="relative">
+                    <div className="w-12 h-12 rounded-xl bg-background border border-border grid place-items-center text-primary">
+                      <Icon className="w-6 h-6" />
+                    </div>
+                    <h3 className="mt-6 text-2xl font-display font-bold">{p.title}</h3>
+                    <p className="mt-3 text-muted-foreground leading-relaxed">{p.description}</p>
+                    <div className="mt-5 flex flex-wrap gap-2">
+                      {p.stack.map((s) => (
+                        <span key={s} className="text-xs font-mono rounded-full border border-border bg-background/50 px-2.5 py-1 text-muted-foreground">{s}</span>
+                      ))}
+                    </div>
                   </div>
-                  <h3 className="mt-6 text-2xl font-display font-bold">{p.title}</h3>
-                  <p className="mt-3 text-muted-foreground leading-relaxed">{p.description}</p>
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    {p.stack.map((s) => (
-                      <span key={s} className="text-xs font-mono rounded-full border border-border bg-background/50 px-2.5 py-1 text-muted-foreground">{s}</span>
-                    ))}
-                  </div>
-                </div>
-              </article>
+                </motion.article>
+              </StaggerItem>
             );
           })}
-        </div>
+        </StaggerContainer>
       </div>
     </section>
   );
