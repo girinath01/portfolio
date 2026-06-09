@@ -197,21 +197,29 @@ function Hero() {
         </motion.div>
       </div>
 
-      <div className="relative max-w-6xl mx-auto px-6 mt-16">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-border rounded-2xl overflow-hidden border border-border">
+      <motion.div
+        className="relative max-w-6xl mx-auto px-6 mt-16"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
+        <StaggerContainer className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-border rounded-2xl overflow-hidden border border-border">
           {[
             { k: "3+", v: "Projects shipped" },
             { k: "5+", v: "Languages" },
             { k: "3", v: "Certifications" },
             { k: "B.Tech", v: "AI & DS · 2024" },
           ].map((s) => (
-            <div key={s.v} className="bg-surface p-5">
-              <div className="text-3xl font-display font-bold text-primary">{s.k}</div>
-              <div className="text-xs text-muted-foreground mt-1">{s.v}</div>
-            </div>
+            <StaggerItem key={s.v}>
+              <div className="bg-surface p-5">
+                <div className="text-3xl font-display font-bold text-primary">{s.k}</div>
+                <div className="text-xs text-muted-foreground mt-1">{s.v}</div>
+              </div>
+            </StaggerItem>
           ))}
-        </div>
-      </div>
+        </StaggerContainer>
+      </motion.div>
     </section>
   );
 }
