@@ -252,31 +252,44 @@ function Skills() {
   return (
     <section id="skills" className="py-24 border-t border-border">
       <div className="max-w-6xl mx-auto px-6">
-        <SectionLabel>02 · Toolkit</SectionLabel>
-        <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold max-w-2xl">The stack I reach for.</h2>
-        <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <AnimatedSection>
+          <SectionLabel>02 · Toolkit</SectionLabel>
+          <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold max-w-2xl">The stack I reach for.</h2>
+        </AnimatedSection>
+        <StaggerContainer className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {SKILL_GROUPS.map((g) => (
-            <div key={g.title} className="group relative rounded-2xl border border-border bg-surface p-6 hover:border-primary/50 transition shadow-card">
-              <div className="font-mono text-xs text-primary uppercase tracking-wider">{g.title}</div>
-              <ul className="mt-4 space-y-2">
-                {g.items.map((i) => (
-                  <li key={i} className="flex items-center gap-2 text-foreground">
-                    <span className="w-1 h-1 rounded-full bg-primary" />
-                    {i}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <StaggerItem key={g.title}>
+              <motion.div
+                className="group relative rounded-2xl border border-border bg-surface p-6 hover:border-primary/50 transition shadow-card h-full"
+                whileHover={{ y: -6, scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 400, damping: 20 }}
+              >
+                <div className="font-mono text-xs text-primary uppercase tracking-wider">{g.title}</div>
+                <ul className="mt-4 space-y-2">
+                  {g.items.map((i) => (
+                    <li key={i} className="flex items-center gap-2 text-foreground">
+                      <span className="w-1 h-1 rounded-full bg-primary" />
+                      {i}
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
 
-        <div className="mt-10 flex flex-wrap gap-3">
+        <AnimatedSection className="mt-10 flex flex-wrap gap-3" delay={0.3}>
           {["Python", "Machine Learning", "OpenCV", "SQL", "Linux", "Git", "Data Analysis"].map((t) => (
-            <span key={t} className="rounded-full border border-border bg-surface/60 px-4 py-1.5 text-sm font-mono text-muted-foreground">
+            <motion.span
+              key={t}
+              className="rounded-full border border-border bg-surface/60 px-4 py-1.5 text-sm font-mono text-muted-foreground"
+              whileHover={{ y: -3, scale: 1.05, borderColor: "var(--primary)" }}
+              transition={{ type: "spring", stiffness: 400, damping: 20 }}
+            >
               {t}
-            </span>
+            </motion.span>
           ))}
-        </div>
+        </AnimatedSection>
       </div>
     </section>
   );
