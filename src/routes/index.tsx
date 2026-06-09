@@ -168,9 +168,18 @@ function Hero() {
           </motion.div>
         </motion.div>
 
-        <div className="relative mx-auto lg:mx-0 w-full max-w-sm">
+        <motion.div
+          className="relative mx-auto lg:mx-0 w-full max-w-sm"
+          initial={{ opacity: 0, scale: 0.9, x: 30 }}
+          animate={{ opacity: 1, scale: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+        >
           <div className="absolute -inset-4 bg-gradient-to-br from-primary/40 to-accent/30 rounded-[2rem] blur-2xl opacity-60 animate-pulse-glow" />
-          <div className="relative rounded-[2rem] overflow-hidden border border-border bg-surface shadow-card animate-float">
+          <motion.div
+            className="relative rounded-[2rem] overflow-hidden border border-border bg-surface shadow-card animate-float"
+            whileHover={{ scale: 1.02, rotate: 1 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          >
             <img
               src={girinathPhoto.url}
               alt="Portrait of Girinath K"
@@ -184,8 +193,8 @@ function Hero() {
               </div>
               <span className="w-3 h-3 rounded-full bg-primary shadow-glow animate-pulse-glow" />
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
 
       <div className="relative max-w-6xl mx-auto px-6 mt-16">
