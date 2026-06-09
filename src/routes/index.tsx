@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Github, Linkedin, Mail, Phone, MapPin, ArrowUpRight, Code2, Database, Brain, Cpu, GraduationCap, Award, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
 import girinathPhoto from "@/assets/girinath.jpeg.asset.json";
+import { AnimatedSection } from "@/components/AnimatedSection";
+import { StaggerContainer, StaggerItem } from "@/components/StaggerContainer";
 
 export const Route = createFileRoute("/")({
   head: () => ({
