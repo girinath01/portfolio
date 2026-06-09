@@ -1,29 +1,362 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Github, Linkedin, Mail, Phone, MapPin, ArrowUpRight, Code2, Database, Brain, Cpu, GraduationCap, Award, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Your App" },
-      { name: "description", content: "Replace this with a one-sentence description of your app." },
-      { property: "og:title", content: "Your App" },
-      { property: "og:description", content: "Replace this with a one-sentence description of your app." },
+      { title: "Girinath K — AI & Data Science Portfolio" },
+      { name: "description", content: "Portfolio of Girinath K — Artificial Intelligence & Data Science student building practical ML, computer vision, and Python applications." },
+      { property: "og:title", content: "Girinath K — AI & Data Science Portfolio" },
+      { property: "og:description", content: "AI & Data Science student crafting practical machine learning, computer vision and Python projects." },
     ],
   }),
-  component: Index,
+  component: Portfolio,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+const NAV = [
+  { label: "About", href: "#about" },
+  { label: "Skills", href: "#skills" },
+  { label: "Projects", href: "#projects" },
+  { label: "Education", href: "#education" },
+  { label: "Contact", href: "#contact" },
+];
+
+const PROJECTS = [
+  {
+    title: "Face Attendance System",
+    stack: ["Python", "OpenCV", "Computer Vision"],
+    description: "AI-powered face recognition system that detects and recognises faces to automate classroom attendance — replacing manual roll calls with a real-time camera pipeline.",
+    icon: Brain,
+    accent: "from-[oklch(0.88_0.21_128)] to-[oklch(0.70_0.18_200)]",
+  },
+  {
+    title: "Interactive Mathematics Platform",
+    stack: ["Python", "HTML", "Algorithms"],
+    description: "An educational web platform that turns abstract math concepts into interactive, beginner-friendly visualisations and logic-based demonstrations.",
+    icon: Cpu,
+    accent: "from-[oklch(0.70_0.18_200)] to-[oklch(0.88_0.21_128)]",
+  },
+  {
+    title: "Notes Sharing Platform",
+    stack: ["Python", "Web", "Collaboration"],
+    description: "A clean platform for students to upload, browse and share academic notes — built to make collaborative learning frictionless and digital-first.",
+    icon: Database,
+    accent: "from-[oklch(0.88_0.21_128)] to-[oklch(0.70_0.18_200)]",
+  },
+];
+
+const SKILL_GROUPS = [
+  { title: "Programming", items: ["Python", "SQL", "Java", "C / C++", "HTML / CSS"] },
+  { title: "Tools", items: ["Git & GitHub", "Linux", "VS Code", "OpenCV"] },
+  { title: "Core", items: ["Machine Learning", "Data Analysis", "Data Visualization", "Problem Solving"] },
+  { title: "Soft Skills", items: ["Communication", "Teamwork", "Adaptability", "Critical Thinking"] },
+];
+
+const EDUCATION = [
+  { title: "B.Tech — Artificial Intelligence & Data Science", school: "KGISL Institute of Technology, Coimbatore", year: "2024 — Present" },
+  { title: "Higher Secondary (HSC)", school: "Amrutha Matric Hr. Sec School, Dharmapuri", year: "2023 — 2024" },
+  { title: "Secondary (SSC)", school: "Amrutha Matric Hr. Sec School, Dharmapuri", year: "2022 — 2023" },
+];
+
+const CERTS = [
+  "Exploratory Data Analysis for Machine Learning",
+  "Introduction to Networking and Storage — IBM Skills Network",
+  "Tools of the Trade: Linux and SQL",
+];
+
+function Portfolio() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+      <Nav />
+      <Hero />
+      <About />
+      <Skills />
+      <Projects />
+      <Education />
+      <Contact />
+      <Footer />
     </div>
   );
+}
+
+function Nav() {
+  return (
+    <header className="fixed top-0 inset-x-0 z-50 backdrop-blur-xl bg-background/60 border-b border-border">
+      <nav className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+        <a href="#top" className="flex items-center gap-2 font-display font-bold text-lg">
+          <span className="w-8 h-8 rounded-md bg-primary text-primary-foreground grid place-items-center font-mono">G</span>
+          <span>Girinath<span className="text-primary">.</span>K</span>
+        </a>
+        <ul className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
+          {NAV.map((n) => (
+            <li key={n.href}>
+              <a href={n.href} className="hover:text-foreground transition-colors">{n.label}</a>
+            </li>
+          ))}
+        </ul>
+        <a href="#contact" className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 transition">
+          Hire me <ArrowUpRight className="w-4 h-4" />
+        </a>
+      </nav>
+    </header>
+  );
+}
+
+function Hero() {
+  return (
+    <section id="top" className="relative pt-32 pb-24 md:pt-44 md:pb-32 bg-hero">
+      <div className="absolute inset-0 grid-bg pointer-events-none" />
+      <div className="relative max-w-6xl mx-auto px-6">
+        <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-1 text-xs font-mono text-muted-foreground mb-8">
+          <span className="w-2 h-2 rounded-full bg-primary animate-pulse-glow" />
+          Available for internships · AI / Data Science
+        </div>
+        <h1 className="font-display font-bold text-5xl sm:text-6xl md:text-8xl leading-[0.95] tracking-tight">
+          Building <span className="text-gradient-accent">intelligent</span><br />
+          systems that<br />
+          <span className="text-gradient">solve real problems.</span>
+        </h1>
+        <p className="mt-8 max-w-2xl text-lg text-muted-foreground leading-relaxed">
+          I'm <span className="text-foreground font-medium">Girinath K</span> — an Artificial Intelligence & Data Science student passionate about machine learning, computer vision, and turning Python prototypes into useful, production-shaped tools.
+        </p>
+        <div className="mt-10 flex flex-wrap items-center gap-4">
+          <a href="#projects" className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-medium text-primary-foreground shadow-glow hover:translate-y-[-1px] transition">
+            View my work <ArrowUpRight className="w-4 h-4" />
+          </a>
+          <a href="#contact" className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/40 px-6 py-3 font-medium text-foreground hover:bg-surface transition">
+            Get in touch
+          </a>
+        </div>
+
+        <div className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-px bg-border rounded-2xl overflow-hidden border border-border">
+          {[
+            { k: "3+", v: "Projects shipped" },
+            { k: "5+", v: "Languages" },
+            { k: "3", v: "Certifications" },
+            { k: "B.Tech", v: "AI & DS · 2024" },
+          ].map((s) => (
+            <div key={s.v} className="bg-surface p-5">
+              <div className="text-3xl font-display font-bold text-primary">{s.k}</div>
+              <div className="text-xs text-muted-foreground mt-1">{s.v}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function About() {
+  return (
+    <section id="about" className="py-24 border-t border-border">
+      <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-12">
+        <div>
+          <SectionLabel>01 · About</SectionLabel>
+          <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold">A student-engineer obsessed with <span className="text-primary">building</span>.</h2>
+        </div>
+        <div className="md:col-span-2 space-y-5 text-lg text-muted-foreground leading-relaxed">
+          <p>
+            I'm currently pursuing my B.Tech in Artificial Intelligence and Data Science at KGISL Institute of Technology, Coimbatore. My focus is on machine learning fundamentals, Python development, and shipping projects that solve practical problems — not toy demos.
+          </p>
+          <p>
+            I learn fastest by building. Whether it's a face-recognition attendance pipeline with OpenCV or an interactive math platform for students, I treat every project as a chance to sharpen both the engineering and the design thinking.
+          </p>
+          <p>
+            I'm actively seeking <span className="text-foreground font-medium">internship opportunities</span> in AI, Data Science and Software Development where I can contribute, learn from senior engineers, and ship work that ends up in production.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Skills() {
+  return (
+    <section id="skills" className="py-24 border-t border-border">
+      <div className="max-w-6xl mx-auto px-6">
+        <SectionLabel>02 · Toolkit</SectionLabel>
+        <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold max-w-2xl">The stack I reach for.</h2>
+        <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {SKILL_GROUPS.map((g) => (
+            <div key={g.title} className="group relative rounded-2xl border border-border bg-surface p-6 hover:border-primary/50 transition shadow-card">
+              <div className="font-mono text-xs text-primary uppercase tracking-wider">{g.title}</div>
+              <ul className="mt-4 space-y-2">
+                {g.items.map((i) => (
+                  <li key={i} className="flex items-center gap-2 text-foreground">
+                    <span className="w-1 h-1 rounded-full bg-primary" />
+                    {i}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-10 flex flex-wrap gap-3">
+          {["Python", "Machine Learning", "OpenCV", "SQL", "Linux", "Git", "Data Analysis"].map((t) => (
+            <span key={t} className="rounded-full border border-border bg-surface/60 px-4 py-1.5 text-sm font-mono text-muted-foreground">
+              {t}
+            </span>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Projects() {
+  return (
+    <section id="projects" className="py-24 border-t border-border">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="flex items-end justify-between flex-wrap gap-4">
+          <div>
+            <SectionLabel>03 · Selected work</SectionLabel>
+            <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold max-w-2xl">Projects I've shipped.</h2>
+          </div>
+          <a href="https://github.com/girinath01" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition">
+            <Github className="w-4 h-4" /> github.com/girinath01
+          </a>
+        </div>
+
+        <div className="mt-14 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {PROJECTS.map((p) => {
+            const Icon = p.icon;
+            return (
+              <article key={p.title} className="group relative rounded-3xl border border-border bg-surface p-7 hover:bg-surface-elevated transition shadow-card overflow-hidden">
+                <div className={`absolute -top-12 -right-12 w-40 h-40 rounded-full bg-gradient-to-br ${p.accent} opacity-10 blur-2xl group-hover:opacity-25 transition`} />
+                <div className="relative">
+                  <div className="w-12 h-12 rounded-xl bg-background border border-border grid place-items-center text-primary">
+                    <Icon className="w-6 h-6" />
+                  </div>
+                  <h3 className="mt-6 text-2xl font-display font-bold">{p.title}</h3>
+                  <p className="mt-3 text-muted-foreground leading-relaxed">{p.description}</p>
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    {p.stack.map((s) => (
+                      <span key={s} className="text-xs font-mono rounded-full border border-border bg-background/50 px-2.5 py-1 text-muted-foreground">{s}</span>
+                    ))}
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Education() {
+  return (
+    <section id="education" className="py-24 border-t border-border">
+      <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-16">
+        <div>
+          <SectionLabel>04 · Education</SectionLabel>
+          <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold">Where I've studied.</h2>
+          <ul className="mt-10 space-y-6">
+            {EDUCATION.map((e) => (
+              <li key={e.title} className="relative pl-8 border-l border-border">
+                <span className="absolute -left-[7px] top-1.5 w-3 h-3 rounded-full bg-primary shadow-glow" />
+                <div className="font-mono text-xs text-primary">{e.year}</div>
+                <div className="mt-1 font-display font-semibold text-lg flex items-start gap-2">
+                  <GraduationCap className="w-5 h-5 mt-1 text-muted-foreground" />{e.title}
+                </div>
+                <div className="text-muted-foreground text-sm">{e.school}</div>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <SectionLabel>05 · Certifications</SectionLabel>
+          <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold">Always learning.</h2>
+          <ul className="mt-10 space-y-4">
+            {CERTS.map((c) => (
+              <li key={c} className="rounded-2xl border border-border bg-surface p-5 flex items-start gap-4 hover:border-primary/50 transition">
+                <Award className="w-6 h-6 text-primary shrink-0" />
+                <span className="text-foreground">{c}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-8 rounded-2xl border border-border bg-surface p-6">
+            <div className="flex items-center gap-2 text-sm font-mono text-primary">
+              <Sparkles className="w-4 h-4" /> Coursework
+            </div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {["Python", "DSA", "DBMS", "Machine Learning", "Statistics"].map((c) => (
+                <span key={c} className="text-xs rounded-md bg-background px-2.5 py-1 text-muted-foreground border border-border">{c}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Contact() {
+  return (
+    <section id="contact" className="py-24 border-t border-border">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="relative rounded-[2rem] overflow-hidden border border-border bg-surface p-10 md:p-16 shadow-card">
+          <div className="absolute inset-0 bg-hero opacity-60 pointer-events-none" />
+          <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
+          <div className="relative">
+            <SectionLabel>06 · Let's build</SectionLabel>
+            <h2 className="mt-4 text-4xl md:text-6xl font-display font-bold max-w-3xl leading-[1.05]">
+              Have an idea, an internship, or a problem worth solving? <span className="text-gradient-accent">Let's talk.</span>
+            </h2>
+
+            <div className="mt-12 grid sm:grid-cols-2 gap-4">
+              <ContactCard icon={Mail} label="Email" value="girinath445@gmail.com" href="mailto:girinath445@gmail.com" />
+              <ContactCard icon={Phone} label="Phone" value="+91 87786 01692" href="tel:+918778601692" />
+              <ContactCard icon={Github} label="GitHub" value="github.com/girinath01" href="https://github.com/girinath01" />
+              <ContactCard icon={Linkedin} label="LinkedIn" value="girinath-k" href="https://linkedin.com/in/girinath-k-b63a30314" />
+            </div>
+
+            <div className="mt-10 inline-flex items-center gap-2 text-muted-foreground text-sm">
+              <MapPin className="w-4 h-4 text-primary" /> Based in Dharmapuri, Tamil Nadu · Open to remote
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ContactCard({ icon: Icon, label, value, href }: { icon: typeof Mail; label: string; value: string; href: string }) {
+  return (
+    <a href={href} target="_blank" rel="noreferrer" className="group flex items-center justify-between gap-4 rounded-2xl border border-border bg-background/60 backdrop-blur p-5 hover:border-primary/60 hover:bg-background transition">
+      <div className="flex items-center gap-4 min-w-0">
+        <div className="w-11 h-11 rounded-xl bg-surface border border-border grid place-items-center text-primary shrink-0">
+          <Icon className="w-5 h-5" />
+        </div>
+        <div className="min-w-0">
+          <div className="text-xs font-mono uppercase tracking-wider text-muted-foreground">{label}</div>
+          <div className="truncate font-medium">{value}</div>
+        </div>
+      </div>
+      <ArrowUpRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition" />
+    </a>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="border-t border-border py-10">
+      <div className="max-w-6xl mx-auto px-6 flex flex-wrap items-center justify-between gap-4 text-sm text-muted-foreground">
+        <div className="flex items-center gap-2 font-mono">
+          <Code2 className="w-4 h-4 text-primary" /> Designed & built by Girinath K · 2025
+        </div>
+        <div className="flex items-center gap-4">
+          <a href="https://github.com/girinath01" target="_blank" rel="noreferrer" className="hover:text-primary transition"><Github className="w-4 h-4" /></a>
+          <a href="https://linkedin.com/in/girinath-k-b63a30314" target="_blank" rel="noreferrer" className="hover:text-primary transition"><Linkedin className="w-4 h-4" /></a>
+          <a href="mailto:girinath445@gmail.com" className="hover:text-primary transition"><Mail className="w-4 h-4" /></a>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return <div className="font-mono text-xs uppercase tracking-[0.2em] text-primary">{children}</div>;
 }
