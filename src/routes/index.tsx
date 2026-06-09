@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Github, Linkedin, Mail, Phone, MapPin, ArrowUpRight, Code2, Database, Brain, Cpu, GraduationCap, Award, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
-import girinathPhoto from "@/assets/girinath.jpeg.asset.json";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { StaggerContainer, StaggerItem } from "@/components/StaggerContainer";
+import girinathPhoto from "@/assets/girinath.jpeg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -181,7 +181,7 @@ function Hero() {
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
             <img
-              src={girinathPhoto.url}
+              src={girinathPhoto}
               alt="Portrait of Girinath K"
               className="w-full h-auto object-cover aspect-[4/5]"
             />
