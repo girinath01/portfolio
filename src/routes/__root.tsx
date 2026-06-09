@@ -82,6 +82,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "author", content: "Girinath K" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:title", content: "Girinath K — AI & Data Science Portfolio" },
+      { name: "twitter:title", content: "Girinath K — AI & Data Science Portfolio" },
+      { property: "og:description", content: "Portfolio of Girinath K — AI & Data Science student building ML, computer vision, and Python projects." },
+      { name: "twitter:description", content: "Portfolio of Girinath K — AI & Data Science student building ML, computer vision, and Python projects." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8f1679a7-5cfc-43dc-8585-502f86215644/id-preview-f48a046f--d6d1a368-8a21-41f5-963b-764e1b5b7a9a.lovable.app-1781022578287.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8f1679a7-5cfc-43dc-8585-502f86215644/id-preview-f48a046f--d6d1a368-8a21-41f5-963b-764e1b5b7a9a.lovable.app-1781022578287.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
