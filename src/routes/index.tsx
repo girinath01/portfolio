@@ -59,10 +59,10 @@ const PROJECTS = [
 ];
 
 const SKILL_GROUPS = [
-  { title: "Programming", icon: Code2,  items: ["Python", "SQL", "Java", "C / C++", "HTML / CSS"] },
-  { title: "Tools",       icon: Wrench, items: ["Git & GitHub", "Linux", "VS Code", "OpenCV"] },
-  { title: "Core AI/DS",  icon: Brain,  items: ["Machine Learning", "Data Analysis", "Data Visualization", "Problem Solving"] },
-  { title: "Soft Skills", icon: Users,  items: ["Communication", "Teamwork", "Adaptability", "Critical Thinking"] },
+  { title: "Programming", icon: Code2,    items: ["Python", "SQL", "Java", "C / C++", "HTML / CSS"] },
+  { title: "Tools",       icon: Wrench,   items: ["Git & GitHub", "Linux", "VS Code", "OpenCV"] },
+  { title: "Core AI/DS",  icon: Sparkles, items: ["Machine Learning", "Data Analysis", "Data Visualization", "Problem Solving"] },
+  { title: "Soft Skills", icon: Users,    items: ["Communication", "Teamwork", "Adaptability", "Critical Thinking"] },
 ];
 
 const EDUCATION = [
@@ -336,7 +336,7 @@ function Hero() {
             { k: "3+", v: "Projects shipped" },
             { k: "5+", v: "Languages" },
             { k: "3", v: "Certifications" },
-            { k: "2nd Yr", v: "AI & DS · KGISL" },
+            { k: "2nd", v: "Year · AI & DS · KGISL" },
           ].map((s) => (
             <StaggerItem key={s.v}>
               <div className="bg-surface p-5">
