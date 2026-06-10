@@ -1,6 +1,9 @@
 import { motion } from "framer-motion";
 import { type ReactNode } from "react";
 
+// Professional easing curve — smooth deceleration (easeOutQuart)
+const EASE_OUT = [0.25, 0.46, 0.45, 0.94] as const;
+
 interface AnimatedSectionProps {
   children: ReactNode;
   className?: string;
@@ -15,10 +18,10 @@ export function AnimatedSection({
   direction = "up",
 }: AnimatedSectionProps) {
   const directions = {
-    up: { y: 50, x: 0 },
-    down: { y: -50, x: 0 },
-    left: { y: 0, x: 50 },
-    right: { y: 0, x: -50 },
+    up:    { y: 28, x: 0 },
+    down:  { y: -28, x: 0 },
+    left:  { y: 0, x: 28 },
+    right: { y: 0, x: -28 },
   };
 
   return (
@@ -26,11 +29,11 @@ export function AnimatedSection({
       className={className}
       initial={{ opacity: 0, ...directions[direction] }}
       whileInView={{ opacity: 1, y: 0, x: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
+      viewport={{ once: true, margin: "-60px" }}
       transition={{
-        duration: 0.7,
+        duration: 0.75,
         delay,
-        ease: "easeOut",
+        ease: EASE_OUT,
       }}
     >
       {children}

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Github, Linkedin, Mail, Phone, MapPin, ArrowUpRight, Code2, Database, Brain, Cpu, GraduationCap, Award, Sparkles, Download, ExternalLink, Clock, Menu, Send, CheckCircle2, AlertCircle, Loader2, Sun, Moon, Wrench, Users, Terminal } from "lucide-react";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import emailjs from "@emailjs/browser";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { StaggerContainer, StaggerItem } from "@/components/StaggerContainer";
@@ -78,17 +78,189 @@ const CERTS = [
 ];
 
 function Portfolio() {
+  // Always start hidden to prevent SSR flash of nav before loader mounts
+  const [loading, setLoading] = useState(true);
+  const [shouldShowLoader, setShouldShowLoader] = useState(false);
+
+  useEffect(() => {
+    if (sessionStorage.getItem("portfolio_visited")) {
+      // Returning visitor — skip loader, reveal instantly
+      setLoading(false);
+    } else {
+      // First visit — mount the loader
+      setShouldShowLoader(true);
+    }
+  }, []);
+
+  const handleLoaderComplete = useCallback(() => {
+    sessionStorage.setItem("portfolio_visited", "1");
+    setLoading(false);
+  }, []);
+
   return (
-    <div className="grain min-h-screen bg-background text-foreground overflow-x-hidden">
-      <Nav />
-      <Hero />
-      <About />
-      <Skills />
-      <Projects />
-      <Education />
-      <Contact />
-      <Footer />
-    </div>
+    <>
+      <AnimatePresence mode="wait">
+        {shouldShowLoader && loading && <PageLoader onComplete={handleLoaderComplete} />}
+      </AnimatePresence>
+      <motion.div
+        className="grain min-h-screen bg-background text-foreground overflow-x-hidden"
+        initial={false}
+        animate={loading ? { opacity: 0, scale: 1.04 } : { opacity: 1, scale: 1 }}
+        transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <Nav />
+        <Hero />
+        <About />
+        <Skills />
+        <Projects />
+        <Education />
+        <Contact />
+        <Footer />
+      </motion.div>
+    </>
+  );
+}
+
+/* ── Page Loader ──────────────────────────────────────────────────────────── */
+function PageLoader({ onComplete }: { onComplete: () => void }) {
+  const [phase, setPhase] = useState<"enter" | "progress" | "done">("enter");
+  const [displayPct, setDisplayPct] = useState(0);
+
+  useEffect(() => {
+    // Phase 1 — logo entrance (550ms)
+    const t1 = setTimeout(() => setPhase("progress"), 550);
+
+    // Phase 2 — counter display (mirrors bar duration ~1000ms)
+    let rafId: number;
+    let startTs: number | null = null;
+    const DURATION = 1000;
+
+    const t2 = setTimeout(() => {
+      function countUp(ts: number) {
+        if (!startTs) startTs = ts;
+        const pct = Math.min(Math.round(((ts - startTs) / DURATION) * 100), 100);
+        setDisplayPct(pct);
+        if (pct < 100) {
+          rafId = requestAnimationFrame(countUp);
+        } else {
+          // Phase 3 — small pause then reveal
+          setTimeout(() => setPhase("done"), 120);
+          setTimeout(onComplete, 680);
+        }
+      }
+      rafId = requestAnimationFrame(countUp);
+    }, 550);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      cancelAnimationFrame(rafId);
+    };
+  }, [onComplete]);
+
+  return (
+    <motion.div
+      key="page-loader"
+      className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-background overflow-hidden"
+      initial={{ opacity: 1 }}
+      exit={{ opacity: 0, scale: 1.06, filter: "blur(8px)" }}
+      transition={{ duration: 0.55, ease: [0.76, 0, 0.24, 1] }}
+    >
+      {/* Grid backdrop */}
+      <div className="absolute inset-0 grid-bg opacity-20 pointer-events-none" />
+
+      {/* Ambient glow */}
+      <motion.div
+        className="absolute w-[600px] h-[600px] rounded-full pointer-events-none"
+        style={{ background: "radial-gradient(circle, oklch(0.88 0.21 128 / 0.12) 0%, transparent 70%)" }}
+        animate={{ scale: [1, 1.1, 1], opacity: [0.6, 1, 0.6] }}
+        transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      {/* Logo block */}
+      <motion.div
+        className="relative flex flex-col items-center gap-7"
+        initial={{ opacity: 0, y: 20, filter: "blur(6px)" }}
+        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+      >
+        {/* [G] badge with springy pop */}
+        <motion.div
+          className="relative w-20 h-20 rounded-2xl bg-primary text-primary-foreground grid place-items-center font-mono font-bold text-4xl shadow-glow select-none"
+          initial={{ scale: 0.6, rotate: -12 }}
+          animate={{ scale: 1, rotate: 0 }}
+          transition={{ type: "spring", stiffness: 240, damping: 18, delay: 0.05 }}
+        >
+          G
+          {/* Expanding ring pulse */}
+          <motion.span
+            className="absolute inset-0 rounded-2xl border-2 border-primary"
+            animate={{ scale: [1, 1.5, 1.5], opacity: [0.7, 0, 0] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: [0.25, 0.46, 0.45, 0.94], repeatDelay: 0.4 }}
+          />
+        </motion.div>
+
+        {/* Name — each part fades in sequentially */}
+        <motion.div
+          className="flex items-center gap-0.5 font-display font-bold text-2xl tracking-tight"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.22, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
+          <span>Girinath</span>
+          <span className="text-primary mx-0.5">.</span>
+          <span>K</span>
+        </motion.div>
+
+        {/* Tagline */}
+        <motion.p
+          className="font-mono text-[11px] text-muted-foreground tracking-[0.25em] uppercase"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.36, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
+          AI &amp; Data Science
+        </motion.p>
+      </motion.div>
+
+      {/* Progress bar — GPU-accelerated scaleX + shimmer */}
+      <motion.div
+        className="absolute bottom-14 left-1/2 -translate-x-1/2 w-52"
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: phase !== "enter" ? 1 : 0, y: phase !== "enter" ? 0 : 6 }}
+        transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+      >
+        {/* Track */}
+        <div className="relative w-full h-[2px] rounded-full bg-border overflow-hidden">
+          {/* Fill — scaleX is GPU-accelerated unlike width */}
+          <motion.div
+            className="absolute inset-0 rounded-full bg-primary origin-left"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: phase === "progress" || phase === "done" ? 1 : 0 }}
+            transition={{ duration: 1.0, ease: [0.4, 0, 0.2, 1], delay: 0 }}
+          />
+          {/* Shimmer sweep on top */}
+          <motion.div
+            className="absolute inset-0 rounded-full origin-left"
+            style={{
+              background: "linear-gradient(90deg, transparent 0%, oklch(1 0 0 / 0.45) 50%, transparent 100%)",
+            }}
+            initial={{ x: "-100%" }}
+            animate={{ x: phase === "progress" || phase === "done" ? "200%" : "-100%" }}
+            transition={{ duration: 1.0, ease: [0.4, 0, 0.2, 1], delay: 0 }}
+          />
+        </div>
+
+        {/* Percentage counter */}
+        <motion.div
+          className="mt-3 text-center font-mono text-[11px] text-muted-foreground tabular-nums"
+          animate={{ opacity: phase !== "enter" ? 1 : 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          {String(displayPct).padStart(2, "0")}%
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -321,26 +493,26 @@ function Hero() {
       <div className="absolute inset-0 grid-bg pointer-events-none" />
       <div className="relative max-w-6xl mx-auto px-6 grid lg:grid-cols-[1.5fr_1fr] gap-12 lg:gap-16 items-center">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
         >
           <motion.a
             href="#contact"
             className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-1 text-xs font-mono text-muted-foreground mb-8 hover:border-primary/60 hover:text-primary transition cursor-pointer"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            initial={{ opacity: 0, scale: 0.92, y: 8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
           >
             <span className="w-2 h-2 rounded-full bg-primary animate-pulse-glow" />
-            Available for internships · AI / Data Science · Let's talk →
+            Open to work · AI / Data Science · Let's talk →
           </motion.a>
           {/* Typewriter role line */}
           <motion.div
             className="flex items-center gap-2 font-mono text-sm text-muted-foreground mb-5"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.25 }}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.28, duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             <Terminal className="w-3.5 h-3.5 text-primary" />
             <span className="text-primary">&gt;</span>
@@ -350,9 +522,9 @@ function Hero() {
 
           <motion.h1
             className="font-display font-bold text-5xl sm:text-6xl md:text-7xl leading-[0.95] tracking-tight"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
+            transition={{ duration: 0.8, delay: 0.32, ease: [0.22, 1, 0.36, 1] }}
           >
             Building <span className="text-gradient-animate">intelligent</span><br />
             systems that<br />
@@ -360,17 +532,17 @@ function Hero() {
           </motion.h1>
           <motion.p
             className="mt-8 max-w-2xl text-lg text-muted-foreground leading-relaxed"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
+            transition={{ duration: 0.75, delay: 0.48, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             I'm <span className="text-foreground font-medium">Girinath K</span> — an Artificial Intelligence & Data Science student passionate about machine learning, computer vision, and turning Python prototypes into useful, production-shaped tools.
           </motion.p>
           <motion.div
             className="mt-10 flex flex-wrap items-center gap-4"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.7 }}
+            transition={{ duration: 0.7, delay: 0.62, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             <MagneticButton
               href="#projects"
@@ -398,9 +570,9 @@ function Hero() {
 
         <motion.div
           className="relative mx-auto lg:mx-0 w-full max-w-sm"
-          initial={{ opacity: 0, scale: 0.9, x: 30 }}
+          initial={{ opacity: 0, scale: 0.93, x: 24 }}
           animate={{ opacity: 1, scale: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+          transition={{ duration: 0.95, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
         >
           <div className="absolute -inset-4 bg-gradient-to-br from-primary/40 to-accent/30 rounded-[2rem] blur-2xl opacity-60 animate-pulse-glow" />
           <motion.div
@@ -461,8 +633,8 @@ function MagneticButton({ children, href, className }: { children: React.ReactNo
   const ref = useRef<HTMLAnchorElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const springX = useSpring(x, { stiffness: 200, damping: 20 });
-  const springY = useSpring(y, { stiffness: 200, damping: 20 });
+  const springX = useSpring(x, { stiffness: 180, damping: 22, mass: 0.6 });
+  const springY = useSpring(y, { stiffness: 180, damping: 22, mass: 0.6 });
 
   const onMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
     const rect = ref.current!.getBoundingClientRect();
@@ -490,10 +662,10 @@ function TiltCard({ children, className }: { children: React.ReactNode; classNam
   const ref = useRef<HTMLDivElement>(null);
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
-  const sx = useSpring(mx, { stiffness: 300, damping: 30 });
-  const sy = useSpring(my, { stiffness: 300, damping: 30 });
-  const rotateX = useTransform(sy, [-0.5, 0.5], [8, -8]);
-  const rotateY = useTransform(sx, [-0.5, 0.5], [-8, 8]);
+  const sx = useSpring(mx, { stiffness: 200, damping: 28, mass: 0.5 });
+  const sy = useSpring(my, { stiffness: 200, damping: 28, mass: 0.5 });
+  const rotateX = useTransform(sy, [-0.5, 0.5], [6, -6]);
+  const rotateY = useTransform(sx, [-0.5, 0.5], [-6, 6]);
   const [spotX, setSpotX] = useState(50);
   const [spotY, setSpotY] = useState(50);
 
@@ -515,8 +687,8 @@ function TiltCard({ children, className }: { children: React.ReactNode; classNam
         onMouseMove={onMouseMove}
         onMouseLeave={onMouseLeave}
         style={{ rotateX, rotateY }}
-        whileHover={{ scale: 1.02 }}
-        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+        whileHover={{ scale: 1.015 }}
+        transition={{ type: "spring", stiffness: 220, damping: 28 }}
         className={`glow-card relative rounded-3xl border border-border bg-surface shadow-card overflow-hidden h-full flex flex-col ${className ?? ""}`}
       >
         <div
@@ -547,8 +719,8 @@ const TECH_ICONS = [
 function About() {
   return (
     <section id="about" className="relative py-24 border-t border-border overflow-hidden">
-      {/* Big watermark number */}
-      <div className="section-num absolute -top-4 -left-4 select-none">01</div>
+      {/* 01 watermark — direct child of section, clipped by overflow-hidden */}
+      <div className="section-num absolute -top-4 -left-4 select-none pointer-events-none">01</div>
       <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-12 relative">
         <AnimatedSection>
           <SectionLabel>01 · About</SectionLabel>
@@ -579,7 +751,8 @@ function About() {
 function Skills() {
   return (
     <section id="skills" className="relative py-24 border-t border-border overflow-hidden">
-      <div className="section-num absolute -top-4 right-0 select-none">02</div>
+      {/* 02 watermark — direct child of section, clipped by overflow-hidden */}
+      <div className="section-num absolute -top-4 right-0 text-right select-none pointer-events-none">02</div>
       <div className="max-w-6xl mx-auto px-6 relative">
         <AnimatedSection>
           <SectionLabel>02 · Toolkit</SectionLabel>
@@ -665,7 +838,8 @@ function Skills() {
 function Projects() {
   return (
     <section id="projects" className="relative py-24 border-t border-border overflow-hidden">
-      <div className="section-num absolute -top-4 -left-4 select-none">03</div>
+      {/* 03 watermark — direct child of section, clipped by overflow-hidden */}
+      <div className="section-num absolute -top-4 -left-4 select-none pointer-events-none">03</div>
       <div className="max-w-6xl mx-auto px-6 relative">
         <AnimatedSection className="flex items-end justify-between flex-wrap gap-4">
           <div>
@@ -735,9 +909,13 @@ function Projects() {
 
 function Education() {
   return (
-    <section id="education" className="py-24 border-t border-border">
-      <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-16">
-        <div>
+    <section id="education" className="relative py-24 border-t border-border overflow-hidden">
+      {/* 04 watermark — left side, clipped by overflow-hidden */}
+      <div className="section-num absolute -top-4 -left-4 select-none pointer-events-none">04</div>
+      {/* 05 watermark — right side, clipped by overflow-hidden */}
+      <div className="section-num absolute -top-4 right-0 text-right select-none pointer-events-none">05</div>
+      <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-16 relative">
+        <div className="relative">
           <AnimatedSection>
             <SectionLabel>04 · Education</SectionLabel>
             <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold">Where I've studied.</h2>
@@ -758,7 +936,7 @@ function Education() {
           </StaggerContainer>
         </div>
 
-        <div>
+        <div className="relative">
           <AnimatedSection>
             <SectionLabel>05 · Certifications</SectionLabel>
             <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold">Always learning.</h2>
@@ -1003,7 +1181,7 @@ function ContactCard({ icon: Icon, label, value, href }: { icon: typeof Mail; la
 
 function Footer() {
   return (
-    <footer className="border-t border-border py-10">
+    <footer className="relative z-10 bg-background border-t border-border py-10">
       <div className="max-w-6xl mx-auto px-6 flex flex-wrap items-center justify-between gap-4 text-sm text-muted-foreground">
         <div className="flex items-center gap-2 font-mono">
           <Code2 className="w-4 h-4 text-primary" /> Designed & built by Girinath K · 2025
