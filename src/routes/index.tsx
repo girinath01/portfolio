@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Github, Linkedin, Mail, Phone, MapPin, ArrowUpRight, Code2, Database, Brain, Cpu, GraduationCap, Award, Sparkles, Download, ExternalLink, Clock, Menu, Send, CheckCircle2, AlertCircle, Loader2, Sun, Moon, Wrench, Users } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Github, Linkedin, Mail, Phone, MapPin, ArrowUpRight, Code2, Database, Brain, Cpu, GraduationCap, Award, Sparkles, Download, ExternalLink, Clock, Menu, Send, CheckCircle2, AlertCircle, Loader2, Sun, Moon, Wrench, Users, Terminal } from "lucide-react";
+import { motion, AnimatePresence, useScroll, useMotionValueEvent, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 import emailjs from "@emailjs/browser";
 import { AnimatedSection } from "@/components/AnimatedSection";
@@ -79,7 +79,7 @@ const CERTS = [
 
 function Portfolio() {
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+    <div className="grain min-h-screen bg-background text-foreground overflow-x-hidden">
       <Nav />
       <Hero />
       <About />
@@ -95,6 +95,30 @@ function Portfolio() {
 function Nav() {
   const [open, setOpen] = useState(false);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [activeSection, setActiveSection] = useState("top");
+  const [scrolled, setScrolled] = useState(false);
+  const { scrollY, scrollYProgress } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (y) => {
+    setScrolled(y > 40);
+  });
+
+  useEffect(() => {
+    const sections = ["top", "about", "skills", "projects", "education", "contact"];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setActiveSection(e.target.id);
+        });
+      },
+      { rootMargin: "-40% 0px -55% 0px" }
+    );
+    sections.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, []);
 
   // Restore saved theme on mount
   useEffect(() => {
@@ -115,7 +139,14 @@ function Nav() {
   const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
 
   return (
-    <header className="fixed top-0 inset-x-0 z-50 backdrop-blur-xl bg-background/60 border-b border-border">
+    <header className={`fixed top-0 inset-x-0 z-50 backdrop-blur-xl border-b transition-all duration-300 ${
+      scrolled ? "bg-background/80 border-border shadow-card" : "bg-background/30 border-transparent"
+    }`}>
+      {/* Scroll progress bar */}
+      <motion.div
+        className="scroll-progress absolute bottom-0 left-0 right-0 h-[2px] bg-primary origin-left z-10"
+        style={{ scaleX: scrollYProgress }}
+      />
       <nav className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
         <a href="#top" className="flex items-center gap-2 font-display font-bold text-lg">
@@ -125,11 +156,29 @@ function Nav() {
 
         {/* Desktop nav links */}
         <ul className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
-          {NAV.map((n) => (
-            <li key={n.href}>
-              <a href={n.href} className="hover:text-foreground transition-colors">{n.label}</a>
-            </li>
-          ))}
+          {NAV.map((n) => {
+            const sectionId = n.href.replace("#", "");
+            const isActive = activeSection === sectionId;
+            return (
+              <li key={n.href} className="relative">
+                <a
+                  href={n.href}
+                  className={`transition-colors ${
+                    isActive ? "text-primary font-medium" : "hover:text-foreground"
+                  }`}
+                >
+                  {n.label}
+                </a>
+                {isActive && (
+                  <motion.div
+                    layoutId="nav-indicator"
+                    className="absolute -bottom-1 left-0 right-0 h-0.5 rounded-full bg-primary"
+                    transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                  />
+                )}
+              </li>
+            );
+          })}
         </ul>
 
         {/* Desktop right actions */}
@@ -148,9 +197,9 @@ function Nav() {
           >
             <Download className="w-3.5 h-3.5" /> Resume
           </a>
-          <a href="#contact" className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 transition">
+          <MagneticButton href="#contact" className="shimmer-btn inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 transition">
             Hire me <ArrowUpRight className="w-4 h-4" />
-          </a>
+          </MagneticButton>
         </div>
 
         {/* Mobile hamburger */}
@@ -223,9 +272,52 @@ function Nav() {
   );
 }
 
+const ROLES = ["ML Engineer", "Python Developer", "AI Enthusiast", "Problem Solver"];
+
+function useTypewriter(words: string[], speed = 80, pause = 2000) {
+  const [display, setDisplay] = useState("");
+  const [wordIdx, setWordIdx] = useState(0);
+  const [charIdx, setCharIdx] = useState(0);
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    const current = words[wordIdx];
+    const timeout = setTimeout(() => {
+      if (!deleting) {
+        setDisplay(current.slice(0, charIdx + 1));
+        if (charIdx + 1 === current.length) {
+          setTimeout(() => setDeleting(true), pause);
+        } else {
+          setCharIdx((c) => c + 1);
+        }
+      } else {
+        setDisplay(current.slice(0, charIdx - 1));
+        if (charIdx - 1 === 0) {
+          setDeleting(false);
+          setWordIdx((w) => (w + 1) % words.length);
+          setCharIdx(0);
+        } else {
+          setCharIdx((c) => c - 1);
+        }
+      }
+    }, deleting ? speed / 2 : speed);
+    return () => clearTimeout(timeout);
+  }, [charIdx, deleting, wordIdx, words, speed, pause]);
+
+  return display;
+}
+
 function Hero() {
+  const role = useTypewriter(ROLES);
+
   return (
-    <section id="top" className="relative pt-32 pb-24 md:pt-44 md:pb-32 bg-hero">
+    <section id="top" className="relative pt-20 pb-16 md:pt-24 md:pb-24 overflow-hidden">
+      {/* Aurora orbs */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="aurora-1 absolute top-[-20%] left-[10%] w-[600px] h-[600px] rounded-full bg-[oklch(0.88_0.21_128/0.12)] blur-[120px]" />
+        <div className="aurora-2 absolute top-[20%] right-[-10%] w-[500px] h-[500px] rounded-full bg-[oklch(0.70_0.18_200/0.10)] blur-[100px]" />
+        <div className="aurora-3 absolute bottom-[-10%] left-[30%] w-[400px] h-[400px] rounded-full bg-[oklch(0.65_0.20_280/0.08)] blur-[80px]" />
+      </div>
       <div className="absolute inset-0 grid-bg pointer-events-none" />
       <div className="relative max-w-6xl mx-auto px-6 grid lg:grid-cols-[1.5fr_1fr] gap-12 lg:gap-16 items-center">
         <motion.div
@@ -243,13 +335,26 @@ function Hero() {
             <span className="w-2 h-2 rounded-full bg-primary animate-pulse-glow" />
             Available for internships · AI / Data Science · Let's talk →
           </motion.a>
+          {/* Typewriter role line */}
+          <motion.div
+            className="flex items-center gap-2 font-mono text-sm text-muted-foreground mb-5"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.25 }}
+          >
+            <Terminal className="w-3.5 h-3.5 text-primary" />
+            <span className="text-primary">&gt;</span>
+            <span className="text-foreground font-medium min-w-[160px]">{role}</span>
+            <span className="cursor-blink text-primary font-bold">|</span>
+          </motion.div>
+
           <motion.h1
             className="font-display font-bold text-5xl sm:text-6xl md:text-7xl leading-[0.95] tracking-tight"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.3 }}
           >
-            Building <span className="text-gradient-accent">intelligent</span><br />
+            Building <span className="text-gradient-animate">intelligent</span><br />
             systems that<br />
             <span className="text-gradient">solve real problems.</span>
           </motion.h1>
@@ -267,26 +372,22 @@ function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.7 }}
           >
-            <motion.a
+            <MagneticButton
               href="#projects"
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-medium text-primary-foreground shadow-glow transition"
-              whileHover={{ y: -3, scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              className="border-beam shimmer-btn inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-medium text-primary-foreground shadow-glow transition"
             >
               View my work <ArrowUpRight className="w-4 h-4" />
-            </motion.a>
-            <motion.a
+            </MagneticButton>
+            <MagneticButton
               href="#contact"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/40 px-6 py-3 font-medium text-foreground hover:bg-surface transition"
-              whileHover={{ y: -3 }}
-              whileTap={{ scale: 0.98 }}
+              className="shimmer-btn inline-flex items-center gap-2 rounded-full border border-border bg-surface/40 px-6 py-3 font-medium text-foreground hover:bg-surface transition"
             >
               Get in touch
-            </motion.a>
+            </MagneticButton>
             <motion.a
               href="/resume.pdf"
               download
-              className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-6 py-3 font-medium text-primary hover:bg-primary/20 hover:border-primary/70 transition"
+              className="shimmer-btn inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-6 py-3 font-medium text-primary hover:bg-primary/20 hover:border-primary/70 transition"
               whileHover={{ y: -3 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -333,16 +434,21 @@ function Hero() {
       >
         <StaggerContainer className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-border rounded-2xl overflow-hidden border border-border">
           {[
-            { k: "3+", v: "Projects shipped" },
-            { k: "5+", v: "Languages" },
-            { k: "3", v: "Certifications" },
-            { k: "2nd", v: "Year · AI & DS · KGISL" },
+            { k: "3+", v: "Projects shipped", sub: "& counting" },
+            { k: "5+", v: "Languages", sub: "Python-first" },
+            { k: "3", v: "Certifications", sub: "IBM · Coursera" },
+            { k: "2nd", v: "Year · KGISL", sub: "AI & Data Science" },
           ].map((s) => (
             <StaggerItem key={s.v}>
-              <div className="bg-surface p-5">
-                <div className="text-3xl font-display font-bold text-primary">{s.k}</div>
-                <div className="text-xs text-muted-foreground mt-1">{s.v}</div>
-              </div>
+              <motion.div
+                className="bg-surface p-6 h-full group cursor-default"
+                whileHover={{ backgroundColor: "var(--surface-elevated)" }}
+                transition={{ duration: 0.2 }}
+              >
+                <div className="text-4xl font-display font-bold text-primary group-hover:scale-110 transition-transform origin-left">{s.k}</div>
+                <div className="text-sm font-medium text-foreground mt-1">{s.v}</div>
+                <div className="text-xs text-muted-foreground mt-0.5 font-mono">{s.sub}</div>
+              </motion.div>
             </StaggerItem>
           ))}
         </StaggerContainer>
@@ -351,10 +457,99 @@ function Hero() {
   );
 }
 
+function MagneticButton({ children, href, className }: { children: React.ReactNode; href: string; className?: string }) {
+  const ref = useRef<HTMLAnchorElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const springX = useSpring(x, { stiffness: 200, damping: 20 });
+  const springY = useSpring(y, { stiffness: 200, damping: 20 });
+
+  const onMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const rect = ref.current!.getBoundingClientRect();
+    x.set((e.clientX - rect.left - rect.width / 2) * 0.3);
+    y.set((e.clientY - rect.top - rect.height / 2) * 0.3);
+  };
+  const onMouseLeave = () => { x.set(0); y.set(0); };
+
+  return (
+    <motion.a
+      ref={ref}
+      href={href}
+      style={{ x: springX, y: springY }}
+      onMouseMove={onMouseMove}
+      onMouseLeave={onMouseLeave}
+      whileTap={{ scale: 0.97 }}
+      className={className}
+    >
+      {children}
+    </motion.a>
+  );
+}
+
+function TiltCard({ children, className }: { children: React.ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const sx = useSpring(mx, { stiffness: 300, damping: 30 });
+  const sy = useSpring(my, { stiffness: 300, damping: 30 });
+  const rotateX = useTransform(sy, [-0.5, 0.5], [8, -8]);
+  const rotateY = useTransform(sx, [-0.5, 0.5], [-8, 8]);
+  const [spotX, setSpotX] = useState(50);
+  const [spotY, setSpotY] = useState(50);
+
+  const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = ref.current!.getBoundingClientRect();
+    const nx = (e.clientX - rect.left) / rect.width;
+    const ny = (e.clientY - rect.top) / rect.height;
+    mx.set(nx - 0.5);
+    my.set(ny - 0.5);
+    setSpotX(nx * 100);
+    setSpotY(ny * 100);
+  };
+  const onMouseLeave = () => { mx.set(0); my.set(0); };
+
+  return (
+    <div className="tilt-container">
+      <motion.div
+        ref={ref}
+        onMouseMove={onMouseMove}
+        onMouseLeave={onMouseLeave}
+        style={{ rotateX, rotateY }}
+        whileHover={{ scale: 1.02 }}
+        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+        className={`glow-card relative rounded-3xl border border-border bg-surface shadow-card overflow-hidden h-full flex flex-col ${className ?? ""}`}
+      >
+        <div
+          className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          style={{ background: `radial-gradient(350px circle at ${spotX}% ${spotY}%, oklch(0.88 0.21 128 / 0.07), transparent 70%)` }}
+        />
+        {children}
+      </motion.div>
+    </div>
+  );
+}
+
+const TECH_ICONS = [
+  { name: "Python",  cls: "devicon-python-plain colored" },
+  { name: "Java",    cls: "devicon-java-plain colored" },
+  { name: "C++",     cls: "devicon-cplusplus-plain colored" },
+  { name: "HTML",    cls: "devicon-html5-plain colored" },
+  { name: "Git",     cls: "devicon-git-plain colored" },
+  { name: "GitHub",  cls: "devicon-github-original" },
+  { name: "Linux",   cls: "devicon-linux-plain" },
+  { name: "VS Code", cls: "devicon-vscode-plain colored" },
+  { name: "MySQL",   cls: "devicon-mysql-plain colored" },
+  { name: "OpenCV",  cls: "devicon-opencv-plain colored" },
+  { name: "NumPy",   cls: "devicon-numpy-plain colored" },
+  { name: "Pandas",  cls: "devicon-pandas-plain" },
+];
+
 function About() {
   return (
-    <section id="about" className="py-24 border-t border-border">
-      <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-12">
+    <section id="about" className="relative py-24 border-t border-border overflow-hidden">
+      {/* Big watermark number */}
+      <div className="section-num absolute -top-4 -left-4 select-none">01</div>
+      <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-12 relative">
         <AnimatedSection>
           <SectionLabel>01 · About</SectionLabel>
           <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold">A student-engineer obsessed with <span className="text-primary">building</span>.</h2>
@@ -383,13 +578,34 @@ function About() {
 
 function Skills() {
   return (
-    <section id="skills" className="py-24 border-t border-border">
-      <div className="max-w-6xl mx-auto px-6">
+    <section id="skills" className="relative py-24 border-t border-border overflow-hidden">
+      <div className="section-num absolute -top-4 right-0 select-none">02</div>
+      <div className="max-w-6xl mx-auto px-6 relative">
         <AnimatedSection>
           <SectionLabel>02 · Toolkit</SectionLabel>
           <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold max-w-2xl">The stack I reach for.</h2>
         </AnimatedSection>
-        <StaggerContainer className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+        {/* Devicon icon grid */}
+        <StaggerContainer className="mt-14 grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-12 gap-5">
+          {TECH_ICONS.map(({ name, cls }) => (
+            <StaggerItem key={name}>
+              <motion.div
+                className="group flex flex-col items-center gap-2 cursor-default"
+                whileHover={{ y: -8, scale: 1.12 }}
+                transition={{ type: "spring", stiffness: 400, damping: 18 }}
+              >
+                <div className="w-14 h-14 rounded-2xl border border-border bg-surface grid place-items-center group-hover:border-primary/50 group-hover:bg-primary/5 group-hover:shadow-glow transition-all duration-300">
+                  <i className={`${cls} text-3xl`} style={{ filter: "drop-shadow(0 0 6px oklch(0.88 0.21 128 / 0))" }} />
+                </div>
+                <span className="text-[10px] font-mono text-muted-foreground group-hover:text-primary transition-colors text-center">{name}</span>
+              </motion.div>
+            </StaggerItem>
+          ))}
+        </StaggerContainer>
+
+        {/* Skill group cards */}
+        <StaggerContainer className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {SKILL_GROUPS.map((g) => {
             const GroupIcon = g.icon;
             return (
@@ -405,8 +621,8 @@ function Skills() {
                   <div className="font-mono text-xs text-primary uppercase tracking-wider">{g.title}</div>
                   <ul className="mt-4 space-y-2">
                     {g.items.map((i) => (
-                      <li key={i} className="flex items-center gap-2 text-foreground">
-                        <span className="w-1 h-1 rounded-full bg-primary" />
+                      <li key={i} className="flex items-center gap-2 text-foreground text-sm">
+                        <span className="w-1 h-1 rounded-full bg-primary shrink-0" />
                         {i}
                       </li>
                     ))}
@@ -448,8 +664,9 @@ function Skills() {
 
 function Projects() {
   return (
-    <section id="projects" className="py-24 border-t border-border">
-      <div className="max-w-6xl mx-auto px-6">
+    <section id="projects" className="relative py-24 border-t border-border overflow-hidden">
+      <div className="section-num absolute -top-4 -left-4 select-none">03</div>
+      <div className="max-w-6xl mx-auto px-6 relative">
         <AnimatedSection className="flex items-end justify-between flex-wrap gap-4">
           <div>
             <SectionLabel>03 · Selected work</SectionLabel>
@@ -465,11 +682,7 @@ function Projects() {
             const Icon = p.icon;
             return (
               <StaggerItem key={p.title}>
-                <motion.article
-                  className="group relative rounded-3xl border border-border bg-surface p-7 hover:bg-surface-elevated transition shadow-card overflow-hidden h-full flex flex-col"
-                  whileHover={{ y: -8, scale: 1.01 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                >
+                <TiltCard className="group p-7 hover:bg-surface-elevated transition">
                   <div className={`absolute -top-12 -right-12 w-40 h-40 rounded-full bg-gradient-to-br ${p.accent} opacity-10 blur-2xl group-hover:opacity-25 transition`} />
                   <div className="relative flex flex-col flex-1">
                     <div className="flex items-start justify-between gap-3">
@@ -510,7 +723,7 @@ function Projects() {
                       </span>
                     </div>
                   </div>
-                </motion.article>
+                </TiltCard>
               </StaggerItem>
             );
           })}
