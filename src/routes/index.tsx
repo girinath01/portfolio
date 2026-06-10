@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Github, Linkedin, Mail, Phone, MapPin, ArrowUpRight, Code2, Database, Brain, Cpu, GraduationCap, Award, Sparkles } from "lucide-react";
+import { Github, Linkedin, Mail, Phone, MapPin, ArrowUpRight, Code2, Database, Brain, Cpu, GraduationCap, Award, Sparkles, Download, ExternalLink, Clock, Menu } from "lucide-react";
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { StaggerContainer, StaggerItem } from "@/components/StaggerContainer";
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import girinathPhoto from "@/assets/girinath.jpeg";
 
 export const Route = createFileRoute("/")({
@@ -32,6 +34,8 @@ const PROJECTS = [
     description: "AI-powered face recognition system that detects and recognises faces to automate classroom attendance — replacing manual roll calls with a real-time camera pipeline.",
     icon: Brain,
     accent: "from-[oklch(0.88_0.21_128)] to-[oklch(0.70_0.18_200)]",
+    github: "https://github.com/girinath01/face-attendance-system",
+    comingSoon: false,
   },
   {
     title: "Interactive Mathematics Platform",
@@ -39,6 +43,8 @@ const PROJECTS = [
     description: "An educational web platform that turns abstract math concepts into interactive, beginner-friendly visualisations and logic-based demonstrations.",
     icon: Cpu,
     accent: "from-[oklch(0.70_0.18_200)] to-[oklch(0.88_0.21_128)]",
+    github: "https://github.com/navin2006-kumar/MathXplore",
+    comingSoon: false,
   },
   {
     title: "Notes Sharing Platform",
@@ -46,6 +52,8 @@ const PROJECTS = [
     description: "A clean platform for students to upload, browse and share academic notes — built to make collaborative learning frictionless and digital-first.",
     icon: Database,
     accent: "from-[oklch(0.88_0.21_128)] to-[oklch(0.70_0.18_200)]",
+    github: "https://github.com/girinath01/notes-sharing-between-peers",
+    comingSoon: false,
   },
 ];
 
@@ -84,13 +92,18 @@ function Portfolio() {
 }
 
 function Nav() {
+  const [open, setOpen] = useState(false);
+
   return (
     <header className="fixed top-0 inset-x-0 z-50 backdrop-blur-xl bg-background/60 border-b border-border">
       <nav className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+        {/* Logo */}
         <a href="#top" className="flex items-center gap-2 font-display font-bold text-lg">
           <span className="w-8 h-8 rounded-md bg-primary text-primary-foreground grid place-items-center font-mono">G</span>
           <span>Girinath<span className="text-primary">.</span>K</span>
         </a>
+
+        {/* Desktop nav links */}
         <ul className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
           {NAV.map((n) => (
             <li key={n.href}>
@@ -98,9 +111,79 @@ function Nav() {
             </li>
           ))}
         </ul>
-        <a href="#contact" className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 transition">
-          Hire me <ArrowUpRight className="w-4 h-4" />
-        </a>
+
+        {/* Desktop right actions */}
+        <div className="hidden md:flex items-center gap-3">
+          <a
+            href="/resume.pdf"
+            download
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface/60 px-4 py-2 text-sm font-medium text-foreground hover:border-primary/60 hover:text-primary transition"
+          >
+            <Download className="w-3.5 h-3.5" /> Resume
+          </a>
+          <a href="#contact" className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 transition">
+            Hire me <ArrowUpRight className="w-4 h-4" />
+          </a>
+        </div>
+
+        {/* Mobile hamburger */}
+        <div className="flex md:hidden items-center gap-3">
+          <a href="#contact" className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 transition">
+            Hire me
+          </a>
+          <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger asChild>
+              <button
+                aria-label="Open navigation menu"
+                className="w-10 h-10 rounded-xl border border-border bg-surface/60 grid place-items-center text-foreground hover:border-primary/60 hover:text-primary transition"
+              >
+                <Menu className="w-5 h-5" />
+              </button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-72 bg-background border-border p-0 flex flex-col">
+              {/* Drawer header */}
+              <div className="px-6 py-5 border-b border-border flex items-center gap-3">
+                <span className="w-8 h-8 rounded-md bg-primary text-primary-foreground grid place-items-center font-mono font-bold text-sm">G</span>
+                <span className="font-display font-bold">Girinath<span className="text-primary">.</span>K</span>
+              </div>
+
+              {/* Nav links */}
+              <nav className="flex-1 px-4 py-6 space-y-1">
+                {NAV.map((n) => (
+                  <SheetClose asChild key={n.href}>
+                    <a
+                      href={n.href}
+                      className="flex items-center justify-between w-full px-4 py-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface transition font-medium"
+                    >
+                      {n.label}
+                      <ArrowUpRight className="w-4 h-4 opacity-40" />
+                    </a>
+                  </SheetClose>
+                ))}
+              </nav>
+
+              {/* Drawer footer actions */}
+              <div className="px-4 py-6 border-t border-border space-y-3">
+                <a
+                  href="/resume.pdf"
+                  download
+                  onClick={() => setOpen(false)}
+                  className="flex items-center justify-center gap-2 w-full rounded-xl border border-border bg-surface/60 px-4 py-3 text-sm font-medium text-foreground hover:border-primary/60 hover:text-primary transition"
+                >
+                  <Download className="w-4 h-4" /> Download Resume
+                </a>
+                <SheetClose asChild>
+                  <a
+                    href="#contact"
+                    className="flex items-center justify-center gap-2 w-full rounded-xl bg-primary px-4 py-3 text-sm font-medium text-primary-foreground hover:opacity-90 transition"
+                  >
+                    Hire me <ArrowUpRight className="w-4 h-4" />
+                  </a>
+                </SheetClose>
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
       </nav>
     </header>
   );
@@ -164,6 +247,15 @@ function Hero() {
               whileTap={{ scale: 0.98 }}
             >
               Get in touch
+            </motion.a>
+            <motion.a
+              href="/resume.pdf"
+              download
+              className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-6 py-3 font-medium text-primary hover:bg-primary/20 hover:border-primary/70 transition"
+              whileHover={{ y: -3 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Download className="w-4 h-4" /> Resume
             </motion.a>
           </motion.div>
         </motion.div>
@@ -315,21 +407,48 @@ function Projects() {
             return (
               <StaggerItem key={p.title}>
                 <motion.article
-                  className="group relative rounded-3xl border border-border bg-surface p-7 hover:bg-surface-elevated transition shadow-card overflow-hidden h-full"
+                  className="group relative rounded-3xl border border-border bg-surface p-7 hover:bg-surface-elevated transition shadow-card overflow-hidden h-full flex flex-col"
                   whileHover={{ y: -8, scale: 1.01 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 >
                   <div className={`absolute -top-12 -right-12 w-40 h-40 rounded-full bg-gradient-to-br ${p.accent} opacity-10 blur-2xl group-hover:opacity-25 transition`} />
-                  <div className="relative">
-                    <div className="w-12 h-12 rounded-xl bg-background border border-border grid place-items-center text-primary">
-                      <Icon className="w-6 h-6" />
+                  <div className="relative flex flex-col flex-1">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="w-12 h-12 rounded-xl bg-background border border-border grid place-items-center text-primary shrink-0">
+                        <Icon className="w-6 h-6" />
+                      </div>
+                      {p.comingSoon && (
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background/60 px-2.5 py-1 text-xs font-mono text-muted-foreground">
+                          <Clock className="w-3 h-3" /> Coming soon
+                        </span>
+                      )}
                     </div>
                     <h3 className="mt-6 text-2xl font-display font-bold">{p.title}</h3>
-                    <p className="mt-3 text-muted-foreground leading-relaxed">{p.description}</p>
+                    <p className="mt-3 text-muted-foreground leading-relaxed flex-1">{p.description}</p>
                     <div className="mt-5 flex flex-wrap gap-2">
                       {p.stack.map((s) => (
                         <span key={s} className="text-xs font-mono rounded-full border border-border bg-background/50 px-2.5 py-1 text-muted-foreground">{s}</span>
                       ))}
+                    </div>
+                    <div className="mt-6 pt-5 border-t border-border flex items-center gap-3">
+                      {p.github ? (
+                        <a
+                          href={p.github}
+                          target="_blank"
+                          rel="noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background/60 px-3.5 py-1.5 text-xs font-mono text-muted-foreground hover:border-primary/60 hover:text-primary transition"
+                        >
+                          <Github className="w-3.5 h-3.5" /> View source
+                        </a>
+                      ) : (
+                        <span className="inline-flex items-center gap-1.5 text-xs font-mono text-muted-foreground/50 cursor-not-allowed">
+                          <Github className="w-3.5 h-3.5" /> Repo private
+                        </span>
+                      )}
+                      <span className="ml-auto inline-flex items-center gap-1 text-xs text-muted-foreground/40 font-mono">
+                        <ExternalLink className="w-3 h-3" /> Open source
+                      </span>
                     </div>
                   </div>
                 </motion.article>
@@ -422,8 +541,17 @@ function Contact() {
               <ContactCard icon={Linkedin} label="LinkedIn" value="girinath-k" href="https://linkedin.com/in/girinath-k-b63a30314" />
             </div>
 
-            <div className="mt-10 inline-flex items-center gap-2 text-muted-foreground text-sm">
-              <MapPin className="w-4 h-4 text-primary" /> Based in Dharmapuri, Tamil Nadu · Open to remote
+            <div className="mt-10 flex flex-wrap items-center justify-between gap-6">
+              <div className="inline-flex items-center gap-2 text-muted-foreground text-sm">
+                <MapPin className="w-4 h-4 text-primary" /> Based in Dharmapuri, Tamil Nadu · Open to remote
+              </div>
+              <a
+                href="/resume.pdf"
+                download
+                className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-medium text-primary-foreground shadow-glow hover:opacity-90 transition"
+              >
+                <Download className="w-4 h-4" /> Download Resume
+              </a>
             </div>
           </div>
         </div>
