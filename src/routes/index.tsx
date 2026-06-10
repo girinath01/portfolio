@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Github, Linkedin, Mail, Phone, MapPin, ArrowUpRight, Code2, Database, Brain, Cpu, GraduationCap, Award, Sparkles, Download, ExternalLink, Clock, Menu } from "lucide-react";
-import { motion } from "framer-motion";
-import { useState } from "react";
+import { Github, Linkedin, Mail, Phone, MapPin, ArrowUpRight, Code2, Database, Brain, Cpu, GraduationCap, Award, Sparkles, Download, ExternalLink, Clock, Menu, Send, CheckCircle2, AlertCircle, Loader2, Sun, Moon, Wrench, Users } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
+import emailjs from "@emailjs/browser";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { StaggerContainer, StaggerItem } from "@/components/StaggerContainer";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
@@ -31,7 +32,7 @@ const PROJECTS = [
   {
     title: "Face Attendance System",
     stack: ["Python", "OpenCV", "Computer Vision"],
-    description: "AI-powered face recognition system that detects and recognises faces to automate classroom attendance — replacing manual roll calls with a real-time camera pipeline.",
+    description: "Eliminated manual roll-calls for a class of 60+ students — built a real-time face-recognition pipeline with OpenCV that logs attendance in under 15 seconds, replacing a 5-minute paper process.",
     icon: Brain,
     accent: "from-[oklch(0.88_0.21_128)] to-[oklch(0.70_0.18_200)]",
     github: "https://github.com/girinath01/face-attendance-system",
@@ -40,7 +41,7 @@ const PROJECTS = [
   {
     title: "Interactive Mathematics Platform",
     stack: ["Python", "HTML", "Algorithms"],
-    description: "An educational web platform that turns abstract math concepts into interactive, beginner-friendly visualisations and logic-based demonstrations.",
+    description: "Made abstract maths accessible for students by transforming dry textbook concepts into step-by-step interactive visualisations and logic-based problem solvers — learning by doing, not memorising.",
     icon: Cpu,
     accent: "from-[oklch(0.70_0.18_200)] to-[oklch(0.88_0.21_128)]",
     github: "https://github.com/navin2006-kumar/MathXplore",
@@ -49,7 +50,7 @@ const PROJECTS = [
   {
     title: "Notes Sharing Platform",
     stack: ["Python", "Web", "Collaboration"],
-    description: "A clean platform for students to upload, browse and share academic notes — built to make collaborative learning frictionless and digital-first.",
+    description: "Replaced scattered WhatsApp groups and shared drives with a dedicated peer-to-peer notes platform — enabling students to upload, discover, and share academic notes in one clean place.",
     icon: Database,
     accent: "from-[oklch(0.88_0.21_128)] to-[oklch(0.70_0.18_200)]",
     github: "https://github.com/girinath01/notes-sharing-between-peers",
@@ -58,10 +59,10 @@ const PROJECTS = [
 ];
 
 const SKILL_GROUPS = [
-  { title: "Programming", items: ["Python", "SQL", "Java", "C / C++", "HTML / CSS"] },
-  { title: "Tools", items: ["Git & GitHub", "Linux", "VS Code", "OpenCV"] },
-  { title: "Core", items: ["Machine Learning", "Data Analysis", "Data Visualization", "Problem Solving"] },
-  { title: "Soft Skills", items: ["Communication", "Teamwork", "Adaptability", "Critical Thinking"] },
+  { title: "Programming", icon: Code2,  items: ["Python", "SQL", "Java", "C / C++", "HTML / CSS"] },
+  { title: "Tools",       icon: Wrench, items: ["Git & GitHub", "Linux", "VS Code", "OpenCV"] },
+  { title: "Core AI/DS",  icon: Brain,  items: ["Machine Learning", "Data Analysis", "Data Visualization", "Problem Solving"] },
+  { title: "Soft Skills", icon: Users,  items: ["Communication", "Teamwork", "Adaptability", "Critical Thinking"] },
 ];
 
 const EDUCATION = [
@@ -93,6 +94,25 @@ function Portfolio() {
 
 function Nav() {
   const [open, setOpen] = useState(false);
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+
+  // Restore saved theme on mount
+  useEffect(() => {
+    const saved = localStorage.getItem("theme") as "dark" | "light" | null;
+    if (saved) setTheme(saved);
+  }, []);
+
+  // Apply theme to <html> and persist
+  useEffect(() => {
+    if (theme === "light") {
+      document.documentElement.setAttribute("data-theme", "light");
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+    }
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
 
   return (
     <header className="fixed top-0 inset-x-0 z-50 backdrop-blur-xl bg-background/60 border-b border-border">
@@ -114,6 +134,13 @@ function Nav() {
 
         {/* Desktop right actions */}
         <div className="hidden md:flex items-center gap-3">
+          <button
+            onClick={toggleTheme}
+            aria-label="Toggle light / dark mode"
+            className="w-9 h-9 rounded-xl border border-border bg-surface/60 grid place-items-center text-foreground hover:border-primary/60 hover:text-primary transition"
+          >
+            {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          </button>
           <a
             href="/resume.pdf"
             download
@@ -128,6 +155,13 @@ function Nav() {
 
         {/* Mobile hamburger */}
         <div className="flex md:hidden items-center gap-3">
+          <button
+            onClick={toggleTheme}
+            aria-label="Toggle light / dark mode"
+            className="w-9 h-9 rounded-xl border border-border bg-surface/60 grid place-items-center text-foreground hover:border-primary/60 hover:text-primary transition"
+          >
+            {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          </button>
           <a href="#contact" className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 transition">
             Hire me
           </a>
@@ -199,15 +233,16 @@ function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          <motion.div
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-1 text-xs font-mono text-muted-foreground mb-8"
+          <motion.a
+            href="#contact"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-1 text-xs font-mono text-muted-foreground mb-8 hover:border-primary/60 hover:text-primary transition cursor-pointer"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <span className="w-2 h-2 rounded-full bg-primary animate-pulse-glow" />
-            Available for internships · AI / Data Science
-          </motion.div>
+            Available for internships · AI / Data Science · Let's talk →
+          </motion.a>
           <motion.h1
             className="font-display font-bold text-5xl sm:text-6xl md:text-7xl leading-[0.95] tracking-tight"
             initial={{ opacity: 0, y: 30 }}
@@ -301,7 +336,7 @@ function Hero() {
             { k: "3+", v: "Projects shipped" },
             { k: "5+", v: "Languages" },
             { k: "3", v: "Certifications" },
-            { k: "B.Tech", v: "AI & DS · 2024" },
+            { k: "2nd Yr", v: "AI & DS · KGISL" },
           ].map((s) => (
             <StaggerItem key={s.v}>
               <div className="bg-surface p-5">
@@ -326,7 +361,7 @@ function About() {
         </AnimatedSection>
         <AnimatedSection className="md:col-span-2 space-y-5 text-lg text-muted-foreground leading-relaxed" delay={0.15}>
           <p>
-            I'm currently pursuing my B.Tech in Artificial Intelligence and Data Science at KGISL Institute of Technology, Coimbatore. My focus is on machine learning fundamentals, Python development, and shipping projects that solve practical problems — not toy demos.
+            I'm a second-year B.Tech student in Artificial Intelligence and Data Science at KGISL Institute of Technology, Coimbatore. My focus is on machine learning fundamentals, Python development, and shipping projects that solve practical problems — not toy demos.
           </p>
           <p>
             I learn fastest by building. Whether it's a face-recognition attendance pipeline with OpenCV or an interactive math platform for students, I treat every project as a chance to sharpen both the engineering and the design thinking.
@@ -334,6 +369,12 @@ function About() {
           <p>
             I'm actively seeking <span className="text-foreground font-medium">internship opportunities</span> in AI, Data Science and Software Development where I can contribute, learn from senior engineers, and ship work that ends up in production.
           </p>
+          <div className="pt-2 flex flex-wrap items-center gap-2">
+            <span className="text-sm font-mono text-primary shrink-0">Currently exploring →</span>
+            {["Deep Learning", "FastAPI", "LangChain", "RAG"].map((t) => (
+              <span key={t} className="text-xs rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-primary font-mono">{t}</span>
+            ))}
+          </div>
         </AnimatedSection>
       </div>
     </section>
@@ -349,38 +390,56 @@ function Skills() {
           <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold max-w-2xl">The stack I reach for.</h2>
         </AnimatedSection>
         <StaggerContainer className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {SKILL_GROUPS.map((g) => (
-            <StaggerItem key={g.title}>
-              <motion.div
-                className="group relative rounded-2xl border border-border bg-surface p-6 hover:border-primary/50 transition shadow-card h-full"
-                whileHover={{ y: -6, scale: 1.02 }}
-                transition={{ type: "spring", stiffness: 400, damping: 20 }}
-              >
-                <div className="font-mono text-xs text-primary uppercase tracking-wider">{g.title}</div>
-                <ul className="mt-4 space-y-2">
-                  {g.items.map((i) => (
-                    <li key={i} className="flex items-center gap-2 text-foreground">
-                      <span className="w-1 h-1 rounded-full bg-primary" />
-                      {i}
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            </StaggerItem>
-          ))}
+          {SKILL_GROUPS.map((g) => {
+            const GroupIcon = g.icon;
+            return (
+              <StaggerItem key={g.title}>
+                <motion.div
+                  className="group relative rounded-2xl border border-border bg-surface p-6 hover:border-primary/50 transition shadow-card h-full"
+                  whileHover={{ y: -6, scale: 1.02 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                >
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 grid place-items-center text-primary mb-4 group-hover:bg-primary/20 transition">
+                    <GroupIcon className="w-5 h-5" />
+                  </div>
+                  <div className="font-mono text-xs text-primary uppercase tracking-wider">{g.title}</div>
+                  <ul className="mt-4 space-y-2">
+                    {g.items.map((i) => (
+                      <li key={i} className="flex items-center gap-2 text-foreground">
+                        <span className="w-1 h-1 rounded-full bg-primary" />
+                        {i}
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              </StaggerItem>
+            );
+          })}
         </StaggerContainer>
 
-        <AnimatedSection className="mt-10 flex flex-wrap gap-3" delay={0.3}>
-          {["Python", "Machine Learning", "OpenCV", "SQL", "Linux", "Git", "Data Analysis"].map((t) => (
-            <motion.span
-              key={t}
-              className="rounded-full border border-border bg-surface/60 px-4 py-1.5 text-sm font-mono text-muted-foreground"
-              whileHover={{ y: -3, scale: 1.05, borderColor: "var(--primary)" }}
-              transition={{ type: "spring", stiffness: 400, damping: 20 }}
-            >
-              {t}
-            </motion.span>
-          ))}
+        <AnimatedSection className="mt-10" delay={0.3}>
+          <div className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-4">Quick picks</div>
+          <div className="flex flex-wrap gap-3">
+            {[
+              { label: "Python",           color: "border-yellow-500/40 bg-yellow-500/10 text-yellow-400" },
+              { label: "Machine Learning",  color: "border-primary/40 bg-primary/10 text-primary" },
+              { label: "OpenCV",            color: "border-blue-500/40 bg-blue-500/10 text-blue-400" },
+              { label: "SQL",               color: "border-orange-500/40 bg-orange-500/10 text-orange-400" },
+              { label: "Linux",             color: "border-slate-400/40 bg-slate-400/10 text-slate-400" },
+              { label: "Git",               color: "border-red-500/40 bg-red-500/10 text-red-400" },
+              { label: "Data Analysis",     color: "border-purple-500/40 bg-purple-500/10 text-purple-400" },
+              { label: "Java",              color: "border-amber-600/40 bg-amber-600/10 text-amber-500" },
+            ].map(({ label, color }) => (
+              <motion.span
+                key={label}
+                className={`rounded-full border px-4 py-1.5 text-xs font-mono ${color}`}
+                whileHover={{ y: -3, scale: 1.06 }}
+                transition={{ type: "spring", stiffness: 400, damping: 20 }}
+              >
+                {label}
+              </motion.span>
+            ))}
+          </div>
         </AnimatedSection>
       </div>
     </section>
@@ -525,38 +584,190 @@ function Contact() {
   return (
     <section id="contact" className="py-24 border-t border-border">
       <div className="max-w-6xl mx-auto px-6">
-        <div className="relative rounded-[2rem] overflow-hidden border border-border bg-surface p-10 md:p-16 shadow-card">
+        <div className="relative rounded-[2rem] overflow-hidden border border-border bg-surface shadow-card">
           <div className="absolute inset-0 bg-hero opacity-60 pointer-events-none" />
           <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
-          <div className="relative">
-            <SectionLabel>06 · Let's build</SectionLabel>
-            <h2 className="mt-4 text-4xl md:text-6xl font-display font-bold max-w-3xl leading-[1.05]">
-              Have an idea, an internship, or a problem worth solving? <span className="text-gradient-accent">Let's talk.</span>
-            </h2>
+          <div className="relative grid lg:grid-cols-2 gap-0">
 
-            <div className="mt-12 grid sm:grid-cols-2 gap-4">
-              <ContactCard icon={Mail} label="Email" value="girinath445@gmail.com" href="mailto:girinath445@gmail.com" />
-              <ContactCard icon={Phone} label="Phone" value="+91 87786 01692" href="tel:+918778601692" />
-              <ContactCard icon={Github} label="GitHub" value="github.com/girinath01" href="https://github.com/girinath01" />
-              <ContactCard icon={Linkedin} label="LinkedIn" value="girinath-k" href="https://linkedin.com/in/girinath-k-b63a30314" />
+            {/* Left — info */}
+            <div className="p-10 md:p-14 border-b lg:border-b-0 lg:border-r border-border">
+              <SectionLabel>06 · Let's build</SectionLabel>
+              <h2 className="mt-4 text-4xl md:text-5xl font-display font-bold leading-[1.05]">
+                Have an idea or internship? <span className="text-gradient-accent">Let's talk.</span>
+              </h2>
+
+              <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-3">
+                <ContactCard icon={Mail} label="Email" value="girinath445@gmail.com" href="mailto:girinath445@gmail.com" />
+                <ContactCard icon={Phone} label="Phone" value="+91 87786 01692" href="tel:+918778601692" />
+                <ContactCard icon={Github} label="GitHub" value="github.com/girinath01" href="https://github.com/girinath01" />
+                <ContactCard icon={Linkedin} label="LinkedIn" value="girinath-k" href="https://linkedin.com/in/girinath-k-b63a30314" />
+              </div>
+
+              <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
+                <div className="inline-flex items-center gap-2 text-muted-foreground text-sm">
+                  <MapPin className="w-4 h-4 text-primary" /> Dharmapuri, TN · Open to remote
+                </div>
+                <a
+                  href="/resume.pdf"
+                  download
+                  className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-glow hover:opacity-90 transition"
+                >
+                  <Download className="w-4 h-4" /> Resume
+                </a>
+              </div>
             </div>
 
-            <div className="mt-10 flex flex-wrap items-center justify-between gap-6">
-              <div className="inline-flex items-center gap-2 text-muted-foreground text-sm">
-                <MapPin className="w-4 h-4 text-primary" /> Based in Dharmapuri, Tamil Nadu · Open to remote
-              </div>
-              <a
-                href="/resume.pdf"
-                download
-                className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-medium text-primary-foreground shadow-glow hover:opacity-90 transition"
-              >
-                <Download className="w-4 h-4" /> Download Resume
-              </a>
+            {/* Right — contact form */}
+            <div className="p-10 md:p-14">
+              <div className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">Send a message</div>
+              <ContactForm />
             </div>
           </div>
         </div>
       </div>
     </section>
+  );
+}
+
+// ── EmailJS config ─────────────────────────────────────────────────────────
+// 1. Sign up free at https://www.emailjs.com
+// 2. Add your Email Service (Gmail works great)
+// 3. Create a Template — use these variables: {{from_name}}, {{from_email}}, {{subject}}, {{message}}
+// 4. Replace the three placeholders below with your actual IDs
+const EMAILJS_SERVICE_ID  = "service_3ibifvc";
+const EMAILJS_TEMPLATE_ID = "template_jc3qc7k";
+const EMAILJS_PUBLIC_KEY  = "hTJQJ7CwD-CXozxQY";
+
+type FormStatus = "idle" | "sending" | "success" | "error";
+
+function ContactForm() {
+  const formRef = useRef<HTMLFormElement>(null);
+  const [status, setStatus] = useState<FormStatus>("idle");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formRef.current) return;
+    setStatus("sending");
+    try {
+      await emailjs.sendForm(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        formRef.current,
+        EMAILJS_PUBLIC_KEY,
+      );
+      setStatus("success");
+      formRef.current.reset();
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  const inputCls = "w-full rounded-xl border border-border bg-background/60 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary/70 focus:ring-2 focus:ring-primary/20 transition";
+
+  return (
+    <AnimatePresence mode="wait">
+      {status === "success" ? (
+        <motion.div
+          key="success"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+          className="flex flex-col items-center justify-center gap-4 py-16 text-center"
+        >
+          <div className="w-16 h-16 rounded-full bg-primary/15 border border-primary/40 grid place-items-center">
+            <CheckCircle2 className="w-8 h-8 text-primary" />
+          </div>
+          <div>
+            <p className="font-display font-bold text-xl">Message sent!</p>
+            <p className="mt-1 text-sm text-muted-foreground">I'll get back to you as soon as possible.</p>
+          </div>
+          <button
+            onClick={() => setStatus("idle")}
+            className="mt-2 text-xs font-mono text-primary hover:underline"
+          >
+            Send another →
+          </button>
+        </motion.div>
+      ) : (
+        <motion.form
+          key="form"
+          ref={formRef}
+          onSubmit={handleSubmit}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="space-y-4"
+        >
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider">Name</label>
+              <input
+                name="from_name"
+                required
+                placeholder="Your name"
+                className={inputCls}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider">Email</label>
+              <input
+                name="from_email"
+                type="email"
+                required
+                placeholder="your@email.com"
+                className={inputCls}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider">Subject</label>
+            <input
+              name="subject"
+              required
+              placeholder="Internship opportunity / Project idea / Just saying hi"
+              className={inputCls}
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider">Message</label>
+            <textarea
+              name="message"
+              required
+              rows={5}
+              placeholder="Tell me what's on your mind..."
+              className={`${inputCls} resize-none`}
+            />
+          </div>
+
+          {status === "error" && (
+            <motion.div
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex items-center gap-2 rounded-xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+            >
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              Something went wrong. Try emailing me directly at kgns859@gmail.com
+            </motion.div>
+          )}
+
+          <motion.button
+            type="submit"
+            disabled={status === "sending"}
+            className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3.5 font-medium text-primary-foreground shadow-glow hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed transition"
+            whileHover={status !== "sending" ? { scale: 1.01 } : {}}
+            whileTap={status !== "sending" ? { scale: 0.98 } : {}}
+          >
+            {status === "sending" ? (
+              <><Loader2 className="w-4 h-4 animate-spin" /> Sending…</>
+            ) : (
+              <><Send className="w-4 h-4" /> Send message</>
+            )}
+          </motion.button>
+        </motion.form>
+      )}
+    </AnimatePresence>
   );
 }
 
@@ -585,9 +796,9 @@ function Footer() {
           <Code2 className="w-4 h-4 text-primary" /> Designed & built by Girinath K · 2025
         </div>
         <div className="flex items-center gap-4">
-          <a href="https://github.com/girinath01" target="_blank" rel="noreferrer" className="hover:text-primary transition"><Github className="w-4 h-4" /></a>
-          <a href="https://linkedin.com/in/girinath-k-b63a30314" target="_blank" rel="noreferrer" className="hover:text-primary transition"><Linkedin className="w-4 h-4" /></a>
-          <a href="mailto:girinath445@gmail.com" className="hover:text-primary transition"><Mail className="w-4 h-4" /></a>
+          <a href="https://github.com/girinath01" target="_blank" rel="noreferrer" aria-label="GitHub profile" className="hover:text-primary transition"><Github className="w-4 h-4" /></a>
+          <a href="https://linkedin.com/in/girinath-k-b63a30314" target="_blank" rel="noreferrer" aria-label="LinkedIn profile" className="hover:text-primary transition"><Linkedin className="w-4 h-4" /></a>
+          <a href="mailto:kgns859@gmail.com" aria-label="Send email" className="hover:text-primary transition"><Mail className="w-4 h-4" /></a>
         </div>
       </div>
     </footer>
