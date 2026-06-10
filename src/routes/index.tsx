@@ -56,6 +56,16 @@ const PROJECTS = [
     github: "https://github.com/girinath01/notes-sharing-between-peers",
     comingSoon: false,
   },
+  {
+    title: "SMS Spam Detection",
+    stack: ["Python", "Scikit-learn", "NLP", "Flask", "TF-IDF"],
+    description: "Built an ML pipeline that classifies incoming SMS messages as spam or legitimate in real time — combining TF-IDF vectorisation with Naive Bayes and Logistic Regression to outperform keyword-based filters and cut cyber fraud risk for everyday users.",
+    icon: Terminal,
+    accent: "from-[oklch(0.75_0.18_30)] to-[oklch(0.88_0.21_128)]",
+    github: null,
+    comingSoon: false,
+    badge: "Planning stage",
+  },
 ];
 
 const SKILL_GROUPS = [
@@ -66,15 +76,48 @@ const SKILL_GROUPS = [
 ];
 
 const EDUCATION = [
-  { title: "B.Tech — Artificial Intelligence & Data Science", school: "KGISL Institute of Technology, Coimbatore", year: "2024 — Present" },
-  { title: "Higher Secondary (HSC)", school: "Amrutha Matric Hr. Sec School, Dharmapuri", year: "2023 — 2024" },
-  { title: "Secondary (SSC)", school: "Amrutha Matric Hr. Sec School, Dharmapuri", year: "2022 — 2023" },
+  {
+    title: "B.Tech — Artificial Intelligence & Data Science",
+    school: "KGISL Institute of Technology, Coimbatore",
+    year: "2024 — Present",
+    status: "active",
+    tags: ["Machine Learning", "Deep Learning", "Data Science", "Python"],
+    highlight: "CGPA tracking · AI specialisation",
+  },
+  {
+    title: "Higher Secondary (HSC)",
+    school: "Amrutha Matric Hr. Sec School, Dharmapuri",
+    year: "2023 — 2024",
+    status: "completed",
+    tags: ["Mathematics", "Physics"],
+    highlight: "Science stream",
+  },
+  {
+    title: "Secondary (SSC)",
+    school: "Amrutha Matric Hr. Sec School, Dharmapuri",
+    year: "2022 — 2023",
+    status: "completed",
+    tags: ["Mathematics", "Science"],
+    highlight: "Strong academic foundation",
+  },
 ];
 
 const CERTS = [
-  "Exploratory Data Analysis for Machine Learning",
-  "Introduction to Networking and Storage — IBM Skills Network",
-  "Tools of the Trade: Linux and SQL",
+  {
+    name: "Exploratory Data Analysis for Machine Learning",
+    issuer: "IBM / Coursera",
+    category: "AI & ML",
+  },
+  {
+    name: "Introduction to Networking and Storage",
+    issuer: "IBM Skills Network",
+    category: "Infrastructure",
+  },
+  {
+    name: "Tools of the Trade: Linux and SQL",
+    issuer: "Google / Coursera",
+    category: "DevTools",
+  },
 ];
 
 function Portfolio() {
@@ -662,14 +705,25 @@ function TiltCard({ children, className }: { children: React.ReactNode; classNam
   const ref = useRef<HTMLDivElement>(null);
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
-  const sx = useSpring(mx, { stiffness: 200, damping: 28, mass: 0.5 });
-  const sy = useSpring(my, { stiffness: 200, damping: 28, mass: 0.5 });
-  const rotateX = useTransform(sy, [-0.5, 0.5], [6, -6]);
-  const rotateY = useTransform(sx, [-0.5, 0.5], [-6, 6]);
+  const scale = useMotionValue(1);
+
+  const sx = useSpring(mx, { stiffness: 300, damping: 26, mass: 0.4 });
+  const sy = useSpring(my, { stiffness: 300, damping: 26, mass: 0.4 });
+  const scaleSpring = useSpring(scale, { stiffness: 320, damping: 22 });
+
+  const rotateX = useTransform(sy, [-0.5, 0.5], [10, -10]);
+  const rotateY = useTransform(sx, [-0.5, 0.5], [-10, 10]);
+
   const [spotX, setSpotX] = useState(50);
   const [spotY, setSpotY] = useState(50);
+  const [hovered, setHovered] = useState(false);
 
-  const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseEnter = () => {
+    scale.set(1.022);
+    setHovered(true);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = ref.current!.getBoundingClientRect();
     const nx = (e.clientX - rect.left) / rect.width;
     const ny = (e.clientY - rect.top) / rect.height;
@@ -678,22 +732,33 @@ function TiltCard({ children, className }: { children: React.ReactNode; classNam
     setSpotX(nx * 100);
     setSpotY(ny * 100);
   };
-  const onMouseLeave = () => { mx.set(0); my.set(0); };
+
+  const handleMouseLeave = () => {
+    mx.set(0);
+    my.set(0);
+    scale.set(1);
+    setHovered(false);
+  };
 
   return (
-    <div className="tilt-container">
+    <div
+      className="tilt-container h-full"
+      onMouseEnter={handleMouseEnter}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
       <motion.div
         ref={ref}
-        onMouseMove={onMouseMove}
-        onMouseLeave={onMouseLeave}
-        style={{ rotateX, rotateY }}
-        whileHover={{ scale: 1.015 }}
-        transition={{ type: "spring", stiffness: 220, damping: 28 }}
+        style={{ rotateX, rotateY, scale: scaleSpring }}
         className={`glow-card relative rounded-3xl border border-border bg-surface shadow-card overflow-hidden h-full flex flex-col ${className ?? ""}`}
       >
+        {/* Cursor spotlight — always JS-driven, never CSS group-hover */}
         <div
-          className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          style={{ background: `radial-gradient(350px circle at ${spotX}% ${spotY}%, oklch(0.88 0.21 128 / 0.07), transparent 70%)` }}
+          className="pointer-events-none absolute inset-0 z-10 transition-opacity duration-200"
+          style={{
+            opacity: hovered ? 1 : 0,
+            background: `radial-gradient(400px circle at ${spotX}% ${spotY}%, oklch(0.88 0.21 128 / 0.12), transparent 65%)`,
+          }}
         />
         {children}
       </motion.div>
@@ -868,6 +933,11 @@ function Projects() {
                           <Clock className="w-3 h-3" /> Coming soon
                         </span>
                       )}
+                      {p.badge && (
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/40 bg-amber-500/10 px-2.5 py-1 text-xs font-mono text-amber-400">
+                          <Clock className="w-3 h-3" /> {p.badge}
+                        </span>
+                      )}
                     </div>
                     <h3 className="mt-6 text-2xl font-display font-bold">{p.title}</h3>
                     <p className="mt-3 text-muted-foreground leading-relaxed flex-1">{p.description}</p>
@@ -920,17 +990,79 @@ function Education() {
             <SectionLabel>04 · Education</SectionLabel>
             <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold">Where I've studied.</h2>
           </AnimatedSection>
-          <StaggerContainer className="mt-10 space-y-6">
-            {EDUCATION.map((e) => (
+          <StaggerContainer className="mt-10 space-y-4">
+            {EDUCATION.map((e, i) => (
               <StaggerItem key={e.title}>
-                <li className="relative pl-8 border-l border-border list-none">
-                  <span className="absolute -left-[7px] top-1.5 w-3 h-3 rounded-full bg-primary shadow-glow" />
-                  <div className="font-mono text-xs text-primary">{e.year}</div>
-                  <div className="mt-1 font-display font-semibold text-lg flex items-start gap-2">
-                    <GraduationCap className="w-5 h-5 mt-1 text-muted-foreground" />{e.title}
+                <motion.div
+                  className={`relative rounded-2xl border p-6 transition-all duration-300 cursor-default overflow-hidden
+                    ${
+                      e.status === "active"
+                        ? "border-primary/40 bg-primary/5 hover:bg-primary/8"
+                        : "border-border bg-surface hover:border-primary/30 hover:bg-surface-elevated"
+                    }`}
+                  whileHover={{ y: -3 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 22 }}
+                >
+                  {/* Subtle gradient wash on active card */}
+                  {e.status === "active" && (
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent" />
+                  )}
+
+                  <div className="relative flex items-start gap-4">
+                    {/* Timeline dot */}
+                    <div className="mt-1 shrink-0 flex flex-col items-center">
+                      <div className={`w-3 h-3 rounded-full border-2 ${
+                        e.status === "active"
+                          ? "bg-primary border-primary shadow-glow animate-pulse-glow"
+                          : "bg-muted-foreground/40 border-border"
+                      }`} />
+                      {i < EDUCATION.length - 1 && (
+                        <div className="w-px flex-1 min-h-[1.5rem] mt-2 bg-border" />
+                      )}
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      {/* Header row */}
+                      <div className="flex items-center justify-between gap-3 flex-wrap">
+                        <span className="font-mono text-xs text-primary">{e.year}</span>
+                        {e.status === "active" && (
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 border border-primary/30 px-2.5 py-0.5 text-xs font-mono text-primary">
+                            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                            Pursuing
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Degree title */}
+                      <div className="mt-2 font-display font-bold text-lg leading-snug flex items-start gap-2">
+                        <GraduationCap className="w-5 h-5 mt-0.5 text-primary shrink-0" />
+                        <span>{e.title}</span>
+                      </div>
+
+                      {/* School */}
+                      <div className="mt-1 text-sm text-muted-foreground flex items-center gap-1.5">
+                        <MapPin className="w-3.5 h-3.5 shrink-0" />
+                        {e.school}
+                      </div>
+
+                      {/* Tags */}
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {e.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className={`text-xs rounded-full px-2.5 py-0.5 font-mono border ${
+                              e.status === "active"
+                                ? "border-primary/30 bg-primary/10 text-primary"
+                                : "border-border bg-background text-muted-foreground"
+                            }`}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-muted-foreground text-sm">{e.school}</div>
-                </li>
+                </motion.div>
               </StaggerItem>
             ))}
           </StaggerContainer>
@@ -941,28 +1073,56 @@ function Education() {
             <SectionLabel>05 · Certifications</SectionLabel>
             <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold">Always learning.</h2>
           </AnimatedSection>
-          <StaggerContainer className="mt-10 space-y-4">
-            {CERTS.map((c) => (
-              <StaggerItem key={c}>
-                <motion.li
-                  className="rounded-2xl border border-border bg-surface p-5 flex items-start gap-4 hover:border-primary/50 transition list-none"
-                  whileHover={{ x: 6 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
+
+          {/* Certification cards */}
+          <StaggerContainer className="mt-10 space-y-3">
+            {CERTS.map((c, i) => (
+              <StaggerItem key={c.name}>
+                <motion.div
+                  className="group relative rounded-2xl border border-border bg-surface p-5 flex items-start gap-4 overflow-hidden cursor-default hover:border-primary/40 transition-colors duration-300"
+                  whileHover={{ y: -2 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 22 }}
                 >
-                  <Award className="w-6 h-6 text-primary shrink-0" />
-                  <span className="text-foreground">{c}</span>
-                </motion.li>
+                  {/* Hover gradient wash */}
+                  <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-primary/[0.06] via-transparent to-transparent" />
+
+                  {/* Numbered badge */}
+                  <div className="relative shrink-0 w-9 h-9 rounded-xl bg-primary/10 border border-primary/20 grid place-items-center text-primary font-mono font-bold text-sm group-hover:bg-primary/20 group-hover:border-primary/40 transition-colors duration-300">
+                    {String(i + 1).padStart(2, "0")}
+                  </div>
+
+                  <div className="relative flex-1 min-w-0">
+                    {/* Category pill */}
+                    <span className="inline-block mb-1.5 text-[10px] font-mono uppercase tracking-wider text-primary/70 bg-primary/10 border border-primary/20 rounded-full px-2 py-0.5">
+                      {c.category}
+                    </span>
+                    {/* Cert name */}
+                    <div className="text-sm font-medium text-foreground leading-snug">{c.name}</div>
+                    {/* Issuer */}
+                    <div className="mt-1 text-xs text-muted-foreground font-mono flex items-center gap-1">
+                      <Award className="w-3 h-3" /> {c.issuer}
+                    </div>
+                  </div>
+
+                  <ArrowUpRight className="relative shrink-0 w-4 h-4 text-muted-foreground/40 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200" />
+                </motion.div>
               </StaggerItem>
             ))}
           </StaggerContainer>
-          <AnimatedSection className="mt-8 rounded-2xl border border-border bg-surface p-6" delay={0.3}>
-            <div className="flex items-center gap-2 text-sm font-mono text-primary">
-              <Sparkles className="w-4 h-4" /> Coursework
-            </div>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {["Python", "DSA", "DBMS", "Machine Learning", "Statistics"].map((c) => (
-                <span key={c} className="text-xs rounded-md bg-background px-2.5 py-1 text-muted-foreground border border-border">{c}</span>
-              ))}
+
+          {/* Coursework block */}
+          <AnimatedSection className="mt-4" delay={0.3}>
+            <div className="rounded-2xl border border-border bg-surface overflow-hidden">
+              {/* Header */}
+              <div className="flex items-center gap-2 px-5 py-4 border-b border-border bg-surface-elevated">
+                <Sparkles className="w-4 h-4 text-primary" />
+                <span className="text-sm font-mono font-medium text-primary">Coursework</span>
+                <span className="ml-auto text-xs font-mono text-muted-foreground">5 subjects</span>
+              </div>
+              {/* Subject list — comma separated */}
+              <div className="px-5 py-4 text-sm text-muted-foreground font-mono leading-relaxed">
+                {["Python", "DSA", "DBMS", "Machine Learning", "Statistics"].join(", ")}
+              </div>
             </div>
           </AnimatedSection>
         </div>

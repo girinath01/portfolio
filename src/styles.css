@@ -279,14 +279,10 @@
   transform-origin: left center;
 }
 
-/* Tilt card 3D perspective — with GPU hints */
+/* Tilt card 3D perspective */
 .tilt-container {
-  perspective: 900px;
-  transform-style: preserve-3d;
-}
-.tilt-container > * {
-  will-change: transform;
-  transform: translateZ(0);
+  perspective: 800px;
+  height: 100%;
 }
 
 /* Custom scrollbar */
