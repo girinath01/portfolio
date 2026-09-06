@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Github, Linkedin, Mail, Phone, MapPin, ArrowUpRight, Code2, Database, Brain, Cpu, GraduationCap, Award, Sparkles, Download, ExternalLink, Clock, Menu, Send, CheckCircle2, AlertCircle, Loader2, Sun, Moon, Wrench, Users, Terminal } from "lucide-react";
+import { Github, Linkedin, Mail, Phone, MapPin, ArrowUpRight, Code2, Database, Brain, Cpu, GraduationCap, Award, Sparkles, Download, ExternalLink, Clock, Menu, Send, CheckCircle2, AlertCircle, Loader2, Sun, Moon, Wrench, Users, Terminal, Trophy } from "lucide-react";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useState, useRef, useEffect, useCallback } from "react";
 import emailjs from "@emailjs/browser";
@@ -24,11 +24,22 @@ const NAV = [
   { label: "About", href: "#about" },
   { label: "Skills", href: "#skills" },
   { label: "Projects", href: "#projects" },
+  { label: "Hackathons", href: "#hackathons" },
   { label: "Education", href: "#education" },
   { label: "Contact", href: "#contact" },
 ];
 
 const PROJECTS = [
+  {
+    title: "India Runs — AI Candidate Ranker",
+    stack: ["Python", "ONNX", "spaCy", "NLP", "Machine Learning"],
+    description: "Built a hyper-optimized 3-pass hybrid AI ranking engine for the Redrob AI challenge — processes 100,000+ JSONL candidates locally in ~150 seconds entirely on CPU, using heuristic streaming, NER, and local ONNX semantic embeddings (all-MiniLM-L6-v2) to identify the top 100 candidates.",
+    icon: Brain,
+    accent: "from-[oklch(0.70_0.18_200)] to-[oklch(0.65_0.20_280)]",
+    github: "https://github.com/girinath01/india-runs",
+    comingSoon: false,
+    badge: "Hackathon Build",
+  },
   {
     title: "Face Attendance System",
     stack: ["Python", "OpenCV", "Computer Vision"],
@@ -65,6 +76,45 @@ const PROJECTS = [
     github: null,
     comingSoon: false,
     badge: "Planning stage",
+  },
+];
+
+interface HackathonItem {
+  name: string;
+  organizer: string;
+  platform?: string | null;
+  result: string;
+  year: string | number;
+  description: string;
+  tags: string[];
+  icon: typeof Trophy;
+  accent: string;
+}
+
+const HACKATHONS: HackathonItem[] = [
+  {
+    name: "IdeaForge Buildathon 2026",
+    organizer: "TechVerse Solutions",
+    platform: "Unstop",
+    result: "Certificate of Participation",
+    year: "2026",
+    description:
+      "Participated in IdeaForge, a national-level buildathon organised by TechVerse Solutions on Unstop. Presented and built an innovative tech solution in a competitive hackathon environment alongside teams from colleges across India.",
+    tags: ["Hackathon", "Buildathon", "Innovation", "Teamwork"],
+    icon: Trophy,
+    accent: "from-[oklch(0.88_0.21_128)] to-[oklch(0.70_0.18_200)]",
+  },
+  {
+    name: "Redrob AI Senior AI Engineer Challenge",
+    organizer: "Redrob / India Runs Hackathon",
+    platform: null,
+    result: "Top Submission",
+    year: "2026",
+    description:
+      "Engineered a 3-pass AI ranking engine to process 100,000 JSONL candidates in 150 seconds on CPU-only hardware — combining heuristic streaming, multithreaded NER, and local ONNX semantic embeddings.",
+    tags: ["AI/ML", "NLP", "ONNX", "Python", "Ranking Systems"],
+    icon: Cpu,
+    accent: "from-[oklch(0.70_0.18_200)] to-[oklch(0.88_0.21_128)]",
   },
 ];
 
@@ -156,6 +206,7 @@ function Portfolio() {
         <About />
         <Skills />
         <Projects />
+        <Hackathons />
         <Education />
         <Contact />
         <Footer />
@@ -319,7 +370,7 @@ function Nav() {
   });
 
   useEffect(() => {
-    const sections = ["top", "about", "skills", "projects", "education", "contact"];
+    const sections = ["top", "about", "skills", "projects", "hackathons", "education", "contact"];
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
@@ -965,6 +1016,106 @@ function Projects() {
                       <span className="ml-auto inline-flex items-center gap-1 text-xs text-muted-foreground/40 font-mono">
                         <ExternalLink className="w-3 h-3" /> Open source
                       </span>
+                    </div>
+                  </div>
+                </TiltCard>
+              </StaggerItem>
+            );
+          })}
+        </StaggerContainer>
+      </div>
+    </section>
+  );
+}
+
+function Hackathons() {
+  return (
+    <section id="hackathons" className="relative py-24 border-t border-border overflow-hidden">
+      {/* 04 watermark — right side, clipped by overflow-hidden */}
+      <div className="section-num absolute -top-4 right-0 text-right select-none pointer-events-none">04</div>
+      <div className="max-w-6xl mx-auto px-6 relative">
+        <AnimatedSection className="flex items-end justify-between flex-wrap gap-4">
+          <div>
+            <SectionLabel>04 · Hackathons & Experience</SectionLabel>
+            <h2 className="mt-3 text-4xl md:text-5xl font-display font-bold max-w-2xl">
+              Competitive builds & challenges.
+            </h2>
+          </div>
+          <div className="inline-flex items-center gap-2 text-sm font-mono text-muted-foreground">
+            <Trophy className="w-4 h-4 text-primary" /> 2 National & Global Challenges
+          </div>
+        </AnimatedSection>
+
+        <StaggerContainer className="mt-14 grid md:grid-cols-2 gap-6">
+          {HACKATHONS.map((h) => {
+            const Icon = h.icon;
+            const isTopSubmission = h.result.toLowerCase().includes("top");
+            return (
+              <StaggerItem key={h.name}>
+                <TiltCard className="group p-7 hover:bg-surface-elevated transition">
+                  {/* Ambient accent glow */}
+                  <div
+                    className={`absolute -top-12 -right-12 w-48 h-48 rounded-full bg-gradient-to-br ${h.accent} opacity-10 blur-2xl group-hover:opacity-25 transition duration-500`}
+                  />
+
+                  <div className="relative flex flex-col flex-1">
+                    {/* Top Row: Icon + Badges */}
+                    <div className="flex items-start justify-between gap-3 flex-wrap">
+                      <div className="w-12 h-12 rounded-xl bg-background border border-border grid place-items-center text-primary shrink-0 group-hover:border-primary/50 group-hover:bg-primary/5 transition">
+                        <Icon className="w-6 h-6" />
+                      </div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {/* Year Badge */}
+                        <span className="inline-flex items-center gap-1 rounded-full border border-border bg-background/60 px-2.5 py-1 text-xs font-mono text-muted-foreground">
+                          {h.year}
+                        </span>
+                        {/* Result Badge */}
+                        <span
+                          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-mono font-medium border ${
+                            isTopSubmission
+                              ? "border-amber-500/40 bg-amber-500/10 text-amber-400"
+                              : "border-primary/40 bg-primary/10 text-primary"
+                          }`}
+                        >
+                          {isTopSubmission ? (
+                            <Sparkles className="w-3 h-3 text-amber-400" />
+                          ) : (
+                            <Award className="w-3 h-3 text-primary" />
+                          )}
+                          {h.result}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Hackathon Name & Organizer */}
+                    <h3 className="mt-6 text-2xl font-display font-bold group-hover:text-primary transition-colors">
+                      {h.name}
+                    </h3>
+                    <div className="mt-1.5 flex items-center gap-2 text-xs font-mono text-muted-foreground">
+                      <span className="text-primary font-medium">{h.organizer}</span>
+                      {h.platform && (
+                        <>
+                          <span className="text-border">·</span>
+                          <span>via {h.platform}</span>
+                        </>
+                      )}
+                    </div>
+
+                    {/* Description */}
+                    <p className="mt-4 text-muted-foreground leading-relaxed flex-1 text-sm md:text-base">
+                      {h.description}
+                    </p>
+
+                    {/* Tags */}
+                    <div className="mt-6 flex flex-wrap gap-2">
+                      {h.tags.map((t) => (
+                        <span
+                          key={t}
+                          className="text-xs font-mono rounded-full border border-border bg-background/50 px-2.5 py-1 text-muted-foreground group-hover:border-border/80 transition"
+                        >
+                          {t}
+                        </span>
+                      ))}
                     </div>
                   </div>
                 </TiltCard>
