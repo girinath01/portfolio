@@ -1,6 +1,5 @@
 # [Girinath K — AI & Data Science Portfolio](https://portfolio-zeta-three-rhdgh8ukko.vercel.app/)
-
-🌐 **Live Website**: [https://portfolio-zeta-three-rhdgh8ukko.vercel.app/](https://portfolio-zeta-three-rhdgh8ukko.vercel.app/)
+**Live Website**: [https://portfolio-zeta-three-rhdgh8ukko.vercel.app/](https://portfolio-zeta-three-rhdgh8ukko.vercel.app/)
 
 My personal portfolio built with TanStack Start, React 19, TypeScript, and Tailwind CSS.
 
