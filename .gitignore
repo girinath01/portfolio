@@ -35,3 +35,5 @@ dist-ssr
 AGENT_GUIDE.md
 .agents/
 ORIGINAL_REQUEST.md
+.vercel
+.env*
